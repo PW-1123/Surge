@@ -1,0 +1,3136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surge — AI for Everyone</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3E%3Ccircle cx='500' cy='500' r='420' fill='%234fffb0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://router.huggingface.co">
+<link rel="dns-prefetch" href="https://rkdtmhuwxxnewbjimgmj.supabase.co">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090c;--s1:#0e1117;--s2:#151a22;--s3:#1c2330;
+  --b1:#1a2132;--b2:#243044;--b3:#2e3d55;
+  --acc:#4fffb0;--acd:rgba(79,255,176,.09);--acg:rgba(79,255,176,.18);
+  --ac2:#00d4ff;--ac3:#b464ff;--ac4:#ffb84f;--red:#ff4f6b;
+  --t1:#dde4ef;--t2:#7d8fa8;--t3:#374357;
+  --mono:'Space Mono',monospace;--r:10px;--rs:6px;--rx:16px;
+}
+html{height:100%}
+body{min-height:100%;font-family:var(--mono);background:var(--bg);color:var(--t1);overflow-x:hidden}
+body.is-landing{overflow-y:auto}
+body.is-app{overflow:hidden;height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(var(--b1) 1px,transparent 1px),linear-gradient(90deg,var(--b1) 1px,transparent 1px);
+  background-size:48px 48px;opacity:.18}
+body::after{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;
+  background:radial-gradient(circle,rgba(79,255,176,.06) 0%,transparent 65%);pointer-events:none;z-index:0}
+/* LANDING */
+#landing{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px}
+.land-logo{display:flex;align-items:center;gap:14px;margin-bottom:48px;animation:fadeUp .6s ease}
+.land-logo svg{width:52px;height:52px}
+.land-logo-name{font-size:36px;letter-spacing:-.03em;color:var(--t1)}
+.land-logo-name em{color:var(--acc);font-style:normal}
+.land-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--acd);border:1px solid rgba(79,255,176,.2);border-radius:999px;font-size:11px;color:var(--acc);letter-spacing:.06em;margin-bottom:28px;animation:fadeUp .6s ease .1s both}
+.land-h1{font-size:42px;letter-spacing:-.03em;text-align:center;line-height:1.2;margin-bottom:16px;animation:fadeUp .6s ease .15s both;max-width:700px}
+.land-h1 em{color:var(--acc);font-style:normal}
+.land-sub{font-size:13px;color:var(--t2);text-align:center;line-height:1.9;max-width:560px;margin-bottom:40px;animation:fadeUp .6s ease .2s both}
+.land-cta{display:flex;flex-direction:column;align-items:center;gap:12px;animation:fadeUp .6s ease .25s both}
+.land-btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--acc);border:none;border-radius:var(--rs);color:#07090c;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:all .2s}
+.land-btn-primary:hover{background:#6fffbe;transform:translateY(-1px)}
+.land-btn-secondary{font-size:12px;color:var(--t2);cursor:pointer;background:none;border:none;font-family:var(--mono);letter-spacing:.04em;transition:color .2s;text-decoration:underline;text-underline-offset:3px}
+.land-btn-secondary:hover{color:var(--t1)}
+.land-caps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:860px;width:100%;margin:52px 0 0;animation:fadeUp .6s ease .3s both}
+@media(max-width:700px){.land-caps{grid-template-columns:1fr 1fr}}
+.cap-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:18px;transition:border-color .2s}
+.cap-card:hover{border-color:var(--b2)}
+.cap-ico{font-size:22px;margin-bottom:10px}
+.cap-name{font-size:12px;color:var(--t1);margin-bottom:4px;letter-spacing:.02em}
+.cap-desc{font-size:10px;color:var(--t2);line-height:1.6}
+.land-footer{margin-top:52px;font-size:10px;color:var(--t3);text-align:center;line-height:1.8;animation:fadeUp .6s ease .35s both}
+.land-footer em{color:var(--acc);font-style:normal}
+.land-free-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(79,255,176,.06);border:1px solid rgba(79,255,176,.15);border-radius:999px;font-size:10px;color:var(--acc);margin-bottom:8px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* AUTH */
+.atab{flex:1;padding:9px;font-family:var(--mono);font-size:11px;letter-spacing:.07em;background:transparent;border:none;color:var(--t2);cursor:pointer;transition:all .2s}
+.atab.on{background:var(--acd);color:var(--acc)}
+.afield{margin-bottom:13px}
+.afield label{display:block;font-size:10px;color:var(--t2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.afield input{width:100%;padding:10px 12px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s}
+.afield input:focus{border-color:rgba(79,255,176,.4)}
+.afield input::placeholder{color:var(--t3)}
+.abtn{width:100%;padding:11px;margin-top:6px;background:var(--acd);border:1px solid rgba(79,255,176,.3);border-radius:var(--rs);color:var(--acc);font-family:var(--mono);font-size:12px;letter-spacing:.05em;cursor:pointer;transition:all .2s}
+.abtn:hover{background:var(--acg)}
+.oauth-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s}
+.oauth-btn:hover{border-color:var(--b3);color:var(--t1);background:var(--s3)}
+.aerr{font-size:11px;color:var(--red);margin-top:8px;min-height:14px;line-height:1.5}
+/* SIDEBAR */
+.sbh{padding:11px 10px 9px;border-bottom:1px solid var(--b1);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;min-height:44px}
+.sbh-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.new-btn{display:flex;align-items:center;gap:4px;padding:5px 9px;background:var(--acd);border:1px solid rgba(79,255,176,.2);border-radius:var(--rs);color:var(--acc);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.new-btn:hover{background:var(--acg);border-color:var(--acc)}
+.sb-scroll{flex:1;overflow-y:auto;padding:8px 6px}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+.sb-lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);padding:0 7px;margin:10px 0 4px}
+.si{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:var(--rs);cursor:pointer;transition:all .15s;color:var(--t2);border:1px solid transparent;margin-bottom:2px;min-width:0}
+.si:hover{background:var(--s2);color:var(--t1)}
+.si.on{background:var(--acd);color:var(--acc);border-color:rgba(79,255,176,.14)}
+.si-ico{font-size:11px;flex-shrink:0;width:16px;text-align:center}
+.si-name{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.si-del{opacity:0;width:16px;height:16px;display:flex;align-items:center;justify-content:center;border-radius:3px;font-size:10px;color:var(--t3);transition:all .15s;flex-shrink:0;cursor:pointer}
+.si:hover .si-del{opacity:1}
+.si-del:hover{background:rgba(255,79,107,.15);color:var(--red)}
+.pmenu-item{padding:10px 14px;font-size:12px;color:var(--t2);cursor:pointer;transition:background .15s}
+.pmenu-item:hover{background:var(--s3);color:var(--t1)}
+.pmenu-item.danger{color:var(--red)}
+.pmenu-item.danger:hover{background:rgba(255,79,107,.08)}
+.pmenu-divider{height:1px;background:var(--b1);margin:4px 0}
+/* HOME */
+.hgreet{font-size:28px;letter-spacing:-.03em;margin-bottom:6px}
+.hgreet em{color:var(--acc);font-style:normal}
+.hsub{font-size:12px;color:var(--t2);margin-bottom:36px;line-height:1.7}
+.sec-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-h h2{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:32px}
+.hcard{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:16px 18px;cursor:pointer;transition:all .2s}
+.hcard:hover{border-color:var(--b2);background:var(--s2)}
+.hcard-ico{font-size:18px;margin-bottom:9px}
+.hcard-name{font-size:13px;color:var(--t1);margin-bottom:3px}
+.hcard-desc{font-size:11px;color:var(--t2);line-height:1.5}
+.hcard-meta{font-size:10px;color:var(--t3);margin-top:7px}
+.empty-s{border:1px dashed var(--b2);border-radius:var(--r);padding:28px;text-align:center;color:var(--t3);font-size:12px;grid-column:1/-1}
+.empty-s p{margin-bottom:12px;line-height:1.6}
+/* PROJECT */
+.pp-head{padding:16px 22px 0;border-bottom:1px solid var(--b1);flex-shrink:0}
+.pp-title-row{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.pp-title{font-size:17px;letter-spacing:-.02em;color:var(--t1);flex:1}
+.pp-tabs{display:flex;margin:0 -22px;padding:0 22px}
+.ptab{padding:8px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--t2);cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;transition:all .2s}
+.ptab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.ptab:hover{color:var(--t1)}
+.pp-body{flex:1;overflow:hidden}
+.tpane{height:100%;overflow-y:auto;padding:22px;display:none}
+.tpane.on{display:block}
+.flbl{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--t2);margin-bottom:6px}
+.fhint{font-size:11px;color:var(--t2);margin-bottom:11px;line-height:1.6}
+#inst-ta{width:100%;min-height:130px;padding:12px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-family:var(--mono);font-size:12px;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s}
+#inst-ta:focus{border-color:rgba(79,255,176,.35)}
+#inst-ta::placeholder{color:var(--t3)}
+.act-btn{display:inline-flex;align-items:center;gap:5px;margin-top:9px;padding:7px 16px;background:var(--acd);border:1px solid rgba(79,255,176,.25);border-radius:var(--rs);color:var(--acc);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s}
+.act-btn:hover{background:var(--acg)}
+.dz{border:1.5px dashed var(--b2);border-radius:var(--r);padding:30px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
+.dz:hover,.dz.drag{border-color:rgba(79,255,176,.4);background:var(--acd)}
+.dz-ico{font-size:24px;margin-bottom:6px}
+.dz-txt{font-size:12px;color:var(--t2)}
+.dz-hint{font-size:10px;color:var(--t3);margin-top:3px}
+.flist{display:flex;flex-direction:column;gap:7px}
+.fitem{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs)}
+.fi-ico{font-size:15px;flex-shrink:0}
+.fi-info{flex:1;min-width:0}
+.fi-name{font-size:12px;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fi-size{font-size:10px;color:var(--t3);margin-top:1px}
+.fi-dl{font-size:10px;color:var(--ac2);text-decoration:none;margin-right:6px}
+.fi-del{padding:3px 7px;background:transparent;border:1px solid var(--b2);border-radius:3px;color:var(--t3);font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .15s}
+.fi-del:hover{border-color:var(--red);color:var(--red);background:rgba(255,79,107,.07)}
+.cli{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);cursor:pointer;transition:all .15s;margin-bottom:8px}
+.cli:hover{border-color:var(--b2);background:var(--s3)}
+.cli-info{flex:1;min-width:0}
+.cli-name{font-size:12px;color:var(--t1)}
+.cli-prev{font-size:10px;color:var(--t3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cli-del{font-size:11px;color:var(--t3);padding:4px 7px;border-radius:3px;transition:all .15s;cursor:pointer;flex-shrink:0}
+.cli-del:hover{color:var(--red);background:rgba(255,79,107,.1)}
+/* CHAT */
+.chat-top{padding:11px 20px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:8px;flex-shrink:0;background:rgba(7,9,12,.7)}
+.ct-name{font-size:13px;color:var(--t1);flex:1}
+.cbadge{font-size:10px;padding:2px 8px;border-radius:999px;letter-spacing:.04em;display:none}
+.cbadge.on{display:inline-flex;align-items:center;gap:4px}
+.cbadge.ctx{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);color:var(--ac2)}
+#msgs{flex:1;overflow-y:auto;padding:20px 26px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth}
+#msgs::-webkit-scrollbar{width:3px}
+#msgs::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+.mrow{display:flex;gap:9px;animation:mi .22s ease}
+@keyframes mi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.mrow.user{flex-direction:row-reverse}
+.mav{width:28px;height:28px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:2px;overflow:hidden}
+.mav.bot{background:var(--acd);border:1px solid rgba(79,255,176,.2)}
+.mav.user{border:1.5px solid transparent}
+.mbody{max-width:76%;display:flex;flex-direction:column;gap:3px}
+.mrow.user .mbody{align-items:flex-end}
+.mlbl{font-size:9px;color:var(--t3);letter-spacing:.06em}
+.bbl{padding:10px 13px;border-radius:var(--r);font-size:13px;line-height:1.75;color:var(--t1);border:1px solid var(--b1);background:var(--s2);word-break:break-word}
+.mrow.bot .bbl{border-radius:3px var(--r) var(--r) var(--r)}
+.mrow.user .bbl{background:var(--s2);border-color:rgba(79,255,176,.3);border-radius:var(--r) 3px var(--r) var(--r)}
+.cblk{border:1px solid var(--b2);border-radius:var(--rs);overflow:hidden;margin:6px 0;background:#0b0e14}
+.chdr{display:flex;align-items:center;justify-content:space-between;padding:5px 11px;border-bottom:1px solid var(--b1);background:rgba(255,255,255,.02)}
+.clang{font-size:9px;color:var(--acc);letter-spacing:.1em;text-transform:uppercase}
+.cbody{padding:12px 14px;font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#c9d1d9;overflow-x:auto;white-space:pre}
+.cpbtn{font-size:9px;padding:2px 7px;background:transparent;border:1px solid var(--b2);border-radius:3px;color:var(--t3);cursor:pointer;transition:all .15s;font-family:var(--mono);margin-left:4px}
+.cpbtn:hover{border-color:var(--acc);color:var(--acc)}
+.pvbtn{font-size:9px;padding:2px 7px;background:var(--acd);border:1px solid rgba(79,255,176,.2);border-radius:3px;color:var(--acc);cursor:pointer;transition:all .15s;font-family:var(--mono)}
+.pvbtn:hover{background:var(--acg)}
+.dlbtn{font-size:9px;padding:2px 7px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:3px;color:var(--ac2);cursor:pointer;transition:all .15s;font-family:var(--mono);text-decoration:none}
+.kw{color:#ff79c6}.cm{color:#6272a4;font-style:italic}.st{color:#f1fa8c}.tp{color:#8be9fd}.nu{color:#ffb86c}
+.src-sec{margin-top:8px;padding-top:7px;border-top:1px solid var(--b1)}
+.src-lbl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.src-lnk{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--ac2);text-decoration:none;margin-bottom:2px}
+.src-lnk:hover{text-decoration:underline}
+.trow{display:flex;gap:9px}
+.tbbl{display:flex;gap:4px;align-items:center;padding:10px 13px;background:var(--s2);border:1px solid var(--b1);border-radius:3px var(--r) var(--r) var(--r)}
+.td{width:5px;height:5px;border-radius:50%;background:var(--acc);animation:tda 1.2s infinite;opacity:.3}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes tda{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.ces{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:.4;pointer-events:none}
+.ces-ico{font-size:30px;color:var(--acc)}.ces-txt{font-size:12px;color:var(--t2)}
+/* MCQ */
+.mcq-wrap{margin:10px 0;background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);overflow:hidden}
+.mcq-q{padding:10px 14px;font-size:12px;color:var(--t1);border-bottom:1px solid var(--b1);background:rgba(79,255,176,.04)}
+.mcq-opt{padding:9px 14px;font-size:11px;color:var(--t2);cursor:pointer;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:8px;transition:background .15s}
+.mcq-opt:last-child{border-bottom:none}
+.mcq-opt:hover{background:var(--acd);color:var(--acc)}
+.mcq-key{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:var(--s2);border:1px solid var(--b2);border-radius:4px;font-size:10px;color:var(--acc);flex-shrink:0}
+/* IBAR */
+#ibar{padding:11px 20px 15px;border-top:1px solid var(--b1);background:rgba(7,9,12,.97);backdrop-filter:blur(12px);flex-shrink:0}
+.ibar-ctrl{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
+.att-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);font-size:11px;color:var(--t2);cursor:pointer;transition:all .2s;font-family:var(--mono)}
+.att-btn:hover{border-color:var(--b3);color:var(--t1)}
+.att-btn.recording{border-color:var(--red);color:var(--red);background:rgba(255,79,107,.08)}
+.att-btn.listening{border-color:var(--acc);color:var(--acc);background:var(--acd)}
+.sf-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);font-size:11px;color:var(--t2);cursor:pointer;transition:all .2s;font-family:var(--mono)}
+.sf-btn:hover{border-color:#ffcc00;color:#ffcc00}
+.sf-btn.active{border-color:#ffcc00;color:#111;background:#ffcc00;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px}
+.chip{display:flex;align-items:center;gap:5px;padding:3px 8px;background:var(--s3);border:1px solid var(--b2);border-radius:999px;font-size:10px;color:var(--t2)}
+.chip-x{cursor:pointer;color:var(--t3)}.chip-x:hover{color:var(--red)}
+.irow{display:flex;gap:8px;align-items:flex-end;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:9px 11px;transition:border-color .2s}
+.irow:focus-within{border-color:rgba(79,255,176,.28)}
+#chat-inp{flex:1;background:transparent;border:none;color:var(--t1);font-family:var(--mono);font-size:13px;resize:none;outline:none;line-height:1.55;min-height:22px;max-height:120px;overflow-y:auto}
+#chat-inp::placeholder{color:var(--t3)}
+#send-btn{width:32px;height:32px;background:var(--acd);border:1px solid rgba(79,255,176,.25);border-radius:7px;color:var(--acc);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+#send-btn:hover{background:var(--acg);border-color:var(--acc)}
+#send-btn:disabled{opacity:.3;cursor:not-allowed}
+.ihint{font-size:10px;color:var(--t3);margin-top:5px}
+/* SPEAK FREELY BAR */
+#sf-bar{display:none;flex-shrink:0;background:repeating-linear-gradient(-45deg,#1a1100,#1a1100 9px,#ffcc00 9px,#ffcc00 18px);border-top:2px solid #ffcc00;border-bottom:2px solid #b89900}
+.sf-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(0,0,0,.58)}
+.sf-bar-txt{font-size:11px;color:#fff;letter-spacing:.02em;display:flex;align-items:center;gap:8px;min-width:0}
+.sf-rec-dot{width:9px;height:9px;border-radius:50%;background:var(--red);animation:pulse 1s infinite;flex-shrink:0}
+.sf-stop-btn{padding:6px 14px;background:var(--red);border:none;border-radius:var(--rs);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.sf-stop-btn:hover{background:#ff2040}
+/* MODAL */
+.mbox{background:var(--s1);border:1px solid var(--b2);border-radius:var(--rx);padding:28px;width:460px;animation:up .22s ease;max-height:88vh;overflow-y:auto}
+.mtitle{font-size:16px;letter-spacing:-.02em;color:var(--t1);margin-bottom:20px}
+.mfield{margin-bottom:13px}
+.mfield label{display:block;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--t2);margin-bottom:5px}
+.mfield input,.mfield textarea,.mfield select{width:100%;padding:9px 11px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-family:var(--mono);font-size:12px;outline:none;transition:border-color .2s}
+.mfield textarea{resize:vertical;min-height:70px;line-height:1.6}
+.mfield input:focus,.mfield textarea:focus,.mfield select:focus{border-color:rgba(79,255,176,.4)}
+.mfield input::placeholder,.mfield textarea::placeholder{color:var(--t3)}
+.macts{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.mcancel{padding:8px 15px;background:transparent;border:1px solid var(--b2);border-radius:var(--rs);color:var(--t2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s}
+.mcancel:hover{border-color:var(--b3);color:var(--t1)}
+.mok{padding:8px 18px;background:var(--acd);border:1px solid rgba(79,255,176,.3);border-radius:var(--rs);color:var(--acc);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s;letter-spacing:.04em}
+.mok:hover{background:var(--acg)}
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;padding:9px 14px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);font-size:11px;color:var(--t1);opacity:0;transform:translateY(6px);transition:all .22s;pointer-events:none}
+#toast.show{opacity:1;transform:translateY(0)}
+#toast.ok{border-color:rgba(79,255,176,.3);color:var(--acc)}
+#toast.err{border-color:rgba(255,79,107,.3);color:var(--red)}
+.skel{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:var(--rs);display:block}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-card{height:90px;border-radius:var(--r);margin-bottom:10px}
+.skel-item{height:34px;border-radius:var(--rs);margin-bottom:4px}
+.ib{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--b1);border-radius:var(--rs);color:var(--t2);cursor:pointer;transition:all .2s;font-size:13px}
+.ib:hover{border-color:var(--b2);color:var(--t1)}
+.av-preset{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;background:var(--s2)}
+.av-preset:hover{border-color:var(--b3)}
+.av-preset.on{border-color:var(--acc)}
+.voice-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);cursor:pointer;transition:border-color .15s}
+.voice-opt:hover{border-color:var(--b2)}
+.voice-opt.on{border-color:var(--acc);background:var(--acd)}
+.gen-img{max-width:100%;border-radius:var(--rs);border:1px solid var(--b2);display:block;margin:6px 0}
+.img-att-prev{max-width:160px;max-height:120px;border-radius:var(--rs);border:1px solid var(--b2);object-fit:cover}
+</style>
+</head>
+<body class="is-landing">
+
+<!-- TODO: Replace with your custom SVG logo. Keep id="SL" and viewBox intact. -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+<symbol id="SL" viewBox="0 0 1000 1000">
+<g fill="None" fill-opacity="0.0" stroke="#000000" stroke-opacity="0.00" stroke-width="0.3"><path d="
+M 0.00 1000.00 
+L 1000.00 1000.00
+L 1000.00 0.00
+L 0.00 0.00
+L 0.00 1000.00
+M 440.00 134.00 
+C 441.27 133.82 442.71 134.00 444.00 134.00
+C 450.71 132.48 458.30 132.91 466.00 133.00
+C 468.08 132.64 469.85 132.15 472.00 132.00
+C 470.43 135.84 483.22 133.29 489.00 135.00 C 494.78 136.71 503.77 137.72 510.01 138.99 C 516.25 140.26 522.89 142.20 529.02 143.98 C 535.15 145.75 541.40 148.39 547.22 150.78 C 553.04 153.16 558.41 155.47 564.07 157.93 C 569.74 160.38 574.62 164.03 580.08 166.92 C 585.53 169.82 589.72 172.87 594.70 176.30 C 599.67 179.74 605.07 181.96 609.00 187.00
+C 610.71 188.31 613.23 189.56 615.00 191.00
+C 640.75 211.98 669.65 232.01 691.00 258.00
+C 694.08 260.63 697.94 264.41 701.00 267.00
+C 708.38 270.65 713.29 278.26 720.00 284.00
+C 722.86 286.45 725.38 288.43 728.00 291.00
+C 730.17 292.53 736.06 296.03 738.00 300.00
+C 738.20 300.40 738.00 301.00 738.00 301.00
+C 739.14 305.35 748.40 308.39 750.92 313.08 C 753.44 317.77 760.33 321.72 763.75 326.25 C 767.18 330.77 772.99 334.68 777.00 339.00
+C 778.65 340.17 784.25 342.88 784.00 346.00
+C 784.19 346.32 784.69 346.79 785.00 347.00
+C 786.61 346.85 786.49 347.31 788.00 349.00
+C 794.19 354.93 800.59 361.95 807.00 368.00
+C 809.92 370.75 812.02 374.19 815.00 377.00
+C 822.30 382.88 829.35 391.02 834.00 397.00
+C 862.03 420.95 890.98 450.92 894.00 489.00
+C 894.31 492.94 894.00 497.04 894.00 501.00
+C 894.00 536.81 875.36 566.75 861.70 597.70 C 848.04 628.64 829.05 647.98 814.00 675.00
+C 812.71 677.32 810.35 679.54 810.00 680.00
+C 805.23 688.94 799.93 697.89 794.00 704.00
+C 793.38 704.91 790.55 708.49 790.00 709.00
+C 788.80 710.63 787.94 712.22 787.00 714.00
+C 785.61 716.63 784.22 717.90 782.00 720.00
+C 770.24 731.09 761.83 742.33 750.00 755.00
+C 747.27 759.21 740.70 767.58 735.00 771.00
+C 732.40 772.56 729.46 774.45 727.00 776.00
+C 724.65 778.20 721.92 781.53 719.00 784.00
+C 711.16 790.63 700.55 799.27 691.00 804.00
+C 690.81 804.10 689.24 804.84 689.00 805.00
+C 672.61 816.23 662.98 821.98 644.33 827.33 C 625.68 832.67 596.73 831.00 576.00 831.00
+C 575.50 831.00 574.50 831.00 574.00 831.00
+C 568.67 831.00 563.33 831.00 558.00 831.00
+C 557.00 831.00 556.00 831.00 555.00 831.00
+C 545.33 831.00 535.67 831.00 526.00 831.00
+C 520.67 831.00 515.33 831.00 510.00 831.00
+C 504.27 831.00 498.37 830.11 493.00 830.00
+C 483.44 831.71 474.02 830.35 465.00 829.00
+C 462.46 829.02 459.25 829.22 456.00 829.00
+C 449.40 828.55 442.61 829.00 436.00 829.00
+C 433.37 829.00 430.61 829.25 428.00 829.00
+C 367.86 823.36 305.88 825.89 247.00 814.00
+C 245.09 813.62 243.50 813.51 242.00 813.00
+C 227.20 807.96 213.22 801.10 199.00 795.00
+C 197.20 794.23 196.54 794.00 195.00 793.00
+C 190.14 789.83 184.62 786.77 181.00 783.00
+C 179.60 782.13 177.18 780.87 175.00 779.00
+C 150.79 766.35 137.87 741.32 123.23 718.77 C 108.59 696.22 100.38 667.69 93.67 638.33 C 86.96 608.97 94.27 569.48 105.93 541.93 C 117.58 514.37 130.50 488.99 143.77 462.77 C 157.05 436.55 169.54 411.47 182.92 385.92 C 196.31 360.38 210.52 336.53 224.25 311.25 C 237.99 285.98 252.83 263.80 268.75 239.75 C 284.67 215.71 301.89 200.11 322.00 180.00
+C 323.32 178.68 324.64 177.22 326.00 176.00
+C 339.65 163.75 353.47 155.52 372.07 148.07 C 390.68 140.62 413.01 132.39 434.00 134.00
+C 437.32 133.62 436.27 133.45 440.00 134.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#60D197" stroke-opacity="0.44" stroke-width="0.3"><path d="
+M 434.00 134.00 
+C 435.93 134.15 438.05 134.28 440.00 134.00
+C 436.27 133.45 437.32 133.62 434.00 134.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#39A074" stroke-opacity="0.13" stroke-width="0.3"><path d="
+M 444.00 134.00 
+C 451.37 134.00 459.39 134.15 466.00 133.00
+C 458.30 132.91 450.71 132.48 444.00 134.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#33D58B" stroke-opacity="0.97" stroke-width="0.3"><path d="
+M 466.00 133.00 
+C 459.39 134.15 451.37 134.00 444.00 134.00
+C 442.71 134.00 441.27 133.82 440.00 134.00
+C 438.05 134.28 435.93 134.15 434.00 134.00
+C 413.01 132.39 390.68 140.62 372.07 148.07 C 353.47 155.52 339.65 163.75 326.00 176.00
+C 324.42 178.02 323.09 179.29 322.00 180.00
+C 301.89 200.11 284.67 215.71 268.75 239.75 C 252.83 263.80 237.99 285.98 224.25 311.25 C 210.52 336.53 196.31 360.38 182.92 385.92 C 169.54 411.47 157.05 436.55 143.77 462.77 C 130.50 488.99 117.58 514.37 105.93 541.93 C 94.27 569.48 86.96 608.97 93.67 638.33 C 100.38 667.69 108.59 696.22 123.23 718.77 C 137.87 741.32 150.79 766.35 175.00 779.00
+C 177.61 780.36 178.87 780.79 181.00 783.00
+C 184.62 786.77 190.14 789.83 195.00 793.00
+C 196.52 793.46 196.64 792.01 198.75 793.26 C 200.85 794.51 199.78 795.86 199.00 795.00
+C 213.22 801.10 227.20 807.96 242.00 813.00
+C 243.71 813.31 244.91 813.10 247.00 814.00
+C 305.88 825.89 367.86 823.36 428.00 829.00
+C 429.17 828.87 429.71 827.23 432.01 827.01 C 434.31 826.79 435.45 828.88 436.00 829.00
+C 442.61 829.00 449.40 828.55 456.00 829.00
+C 459.03 828.71 461.52 828.48 465.00 829.00
+C 474.02 830.35 483.44 831.71 493.00 830.00
+C 501.51 828.48 510.72 829.28 520.00 829.00 C 529.28 828.72 539.69 829.63 549.00 829.00 C 558.31 828.37 568.96 829.52 576.00 831.00
+C 596.73 831.00 625.68 832.67 644.33 827.33 C 662.98 821.98 672.61 816.23 689.00 805.00
+C 689.07 804.93 690.35 804.25 691.00 804.00
+C 700.55 799.27 711.16 790.63 719.00 784.00
+C 720.57 782.13 724.58 777.53 727.00 776.00
+C 729.46 774.45 732.40 772.56 735.00 771.00
+C 739.31 767.46 745.44 759.89 750.00 755.00
+C 761.83 742.33 770.24 731.09 782.00 720.00
+C 783.41 718.11 785.81 715.52 787.00 714.00
+C 787.94 712.22 788.80 710.63 790.00 709.00
+C 791.28 707.26 792.64 705.40 794.00 704.00
+C 799.93 697.89 805.23 688.94 810.00 680.00
+C 811.04 678.05 813.93 675.08 814.00 675.00
+C 829.05 647.98 848.04 628.64 861.70 597.70 C 875.36 566.75 894.00 536.81 894.00 501.00
+C 893.66 497.46 893.94 492.36 894.00 489.00
+C 890.98 450.92 862.03 420.95 834.00 397.00
+C 824.31 388.72 814.24 378.79 805.75 369.25 C 797.27 359.71 784.57 351.80 778.00 341.00
+C 777.71 340.52 777.33 339.36 777.00 339.00
+C 772.99 334.68 767.18 330.77 763.75 326.25 C 760.33 321.72 753.44 317.77 750.92 313.08 C 748.40 308.39 739.14 305.35 738.00 301.00
+C 731.38 300.29 723.96 288.63 720.00 284.00
+C 713.29 278.26 708.38 270.65 701.00 267.00
+C 696.90 264.97 693.87 261.49 691.00 258.00
+C 669.65 232.01 640.75 211.98 615.00 191.00
+C 613.86 190.35 610.82 188.89 609.00 187.00
+C 605.07 181.96 599.67 179.74 594.70 176.30 C 589.72 172.87 585.53 169.82 580.08 166.92 C 574.62 164.03 569.74 160.38 564.07 157.93 C 558.41 155.47 553.04 153.16 547.22 150.78 C 541.40 148.39 535.15 145.75 529.02 143.98 C 522.89 142.20 516.25 140.26 510.01 138.99 C 503.77 137.72 494.78 136.71 489.00 135.00 C 483.22 133.29 470.43 135.84 472.00 132.00
+C 469.85 132.15 468.08 132.64 466.00 133.00
+M 467.00 179.00 
+C 475.09 179.31 482.32 179.41 490.00 181.00
+C 495.17 181.08 497.06 181.82 502.00 184.00
+C 512.05 186.04 522.48 189.03 532.00 193.00
+C 532.90 193.17 533.23 192.48 535.23 192.78 C 537.22 193.09 537.10 195.36 538.00 196.00
+C 540.89 197.31 543.96 198.10 547.00 199.00
+C 550.64 200.07 550.74 201.09 553.00 203.00
+C 596.04 227.24 635.41 264.40 671.00 300.00
+C 672.26 301.26 673.78 302.78 675.00 304.00
+C 679.06 308.06 683.00 311.20 686.00 315.00
+C 687.74 316.55 690.16 318.03 692.00 320.00
+C 698.87 327.35 704.79 333.14 710.92 338.13 C 717.05 343.12 724.51 353.39 732.00 358.00
+C 738.42 361.95 745.71 370.71 752.00 377.00
+C 754.67 379.67 757.64 382.07 760.00 385.00
+C 768.99 396.16 782.00 408.96 793.00 418.00
+C 798.58 422.59 804.79 429.61 808.00 434.00
+C 813.73 439.51 820.51 446.94 827.00 455.00
+C 816.40 457.96 805.12 456.43 793.00 457.00
+C 788.92 457.00 784.34 456.32 781.00 456.00
+C 773.23 456.00 764.09 454.88 757.00 456.00
+C 757.44 456.00 761.08 459.18 762.00 459.00
+C 759.16 458.41 755.02 460.22 753.00 458.00
+C 744.37 457.16 735.35 458.02 727.00 457.00
+C 725.71 456.84 724.30 457.00 723.00 457.00
+C 718.55 457.61 713.12 458.00 708.00 458.00
+C 700.18 458.76 690.70 458.33 683.00 458.00
+C 678.30 458.26 674.48 458.27 670.00 458.00
+C 671.48 457.78 669.07 460.54 667.00 460.00 C 664.92 459.46 662.30 459.06 661.00 459.00
+C 652.13 459.97 644.18 460.40 635.00 460.00
+C 631.97 460.42 630.22 461.69 626.00 461.00
+C 623.50 461.04 619.23 462.00 616.00 462.00
+C 613.58 462.23 610.09 463.00 607.00 463.00
+C 594.58 463.00 582.84 464.60 570.00 466.00
+C 567.27 466.30 568.27 466.69 566.00 465.00
+C 546.33 463.21 525.67 470.00 506.00 470.00
+C 503.58 470.23 500.09 471.00 497.00 471.00
+C 455.70 471.00 415.34 476.03 375.00 481.00
+C 373.38 481.20 370.35 480.98 369.00 481.00
+C 359.31 482.79 346.74 485.08 337.00 485.00
+C 333.64 486.26 329.67 489.78 326.00 486.00
+C 320.05 479.88 321.45 467.52 317.22 459.78 C 313.00 452.04 313.37 440.51 310.02 431.98 C 306.68 423.44 306.77 411.95 305.60 403.26 C 304.43 394.56 300.28 382.28 302.00 372.00 C 303.72 361.72 301.29 353.34 302.00 343.00 C 302.71 332.66 304.46 321.09 305.99 311.99 C 307.52 302.90 309.63 294.17 311.99 284.99 C 314.36 275.82 318.01 266.93 320.78 258.78 C 323.55 250.62 327.55 244.99 332.00 237.00
+C 333.29 234.69 335.73 233.36 336.00 233.00
+C 344.70 215.60 365.66 203.76 381.00 193.00
+C 381.18 192.87 381.85 193.22 383.00 193.00
+C 387.09 191.28 390.72 189.39 395.00 188.00
+C 398.87 185.87 399.09 186.43 403.00 186.00
+C 405.80 185.20 408.05 183.55 411.00 183.00
+C 413.61 181.82 415.79 181.16 419.00 181.00
+C 426.10 180.65 433.72 179.53 440.00 178.00
+C 444.66 176.86 443.24 178.64 449.00 177.00 C 454.76 175.36 465.21 178.54 467.00 179.00
+M 257.00 346.00 
+C 257.14 348.09 256.25 349.62 256.00 351.00
+C 254.72 358.05 257.48 372.91 256.65 380.70 C 255.82 388.48 259.00 401.52 259.99 411.01 C 260.99 420.49 262.76 430.61 264.35 439.69 C 265.94 448.78 270.98 459.78 272.98 469.02 C 274.97 478.27 279.58 488.90 281.98 497.02 C 284.37 505.15 286.52 510.31 290.32 519.68 C 294.12 529.05 297.39 535.49 301.31 543.69 C 305.22 551.90 309.44 561.19 312.00 569.00
+C 312.14 569.21 313.54 570.31 314.00 571.00
+C 317.48 576.21 318.93 582.86 322.00 588.00
+C 322.05 588.07 323.98 588.06 325.00 590.00
+C 333.38 605.88 345.98 625.64 356.30 640.70 C 366.62 655.76 376.24 669.41 390.00 686.00
+C 392.75 689.31 394.38 691.46 397.00 694.00
+C 400.18 697.08 403.43 700.32 406.00 704.00
+C 406.16 704.23 407.00 704.00 407.00 704.00
+C 411.81 706.35 416.67 713.02 420.00 717.00
+C 421.79 719.13 424.55 722.78 427.00 725.00
+C 450.95 746.72 473.47 763.51 500.00 782.00
+C 500.92 782.64 504.09 784.71 506.00 785.00
+C 505.26 786.39 501.68 786.65 501.00 785.00
+C 486.37 784.10 472.06 783.00 457.00 783.00
+C 452.28 783.46 446.65 783.45 442.00 783.00
+C 435.13 783.85 427.10 782.59 421.00 782.00
+C 416.78 782.00 412.52 781.76 409.00 781.00
+C 407.44 780.92 405.80 781.94 405.00 782.00
+C 406.28 782.25 407.70 781.81 409.00 782.00
+C 407.41 783.33 401.03 784.38 401.00 781.00
+C 398.14 780.53 394.90 781.07 392.00 781.00
+C 381.34 780.73 368.94 778.45 358.00 778.00
+C 356.09 778.24 354.43 779.20 352.00 779.00
+C 331.70 777.31 306.98 776.34 286.00 775.00 C 265.02 773.66 249.58 766.55 231.00 761.00
+C 228.39 760.22 226.50 759.75 224.00 758.00
+C 217.04 753.12 210.38 748.36 204.00 745.00
+C 201.31 743.59 198.47 741.05 196.00 739.00
+C 194.80 738.00 193.98 737.12 193.00 736.00
+C 190.61 733.28 188.24 730.72 186.00 728.00
+C 156.69 698.69 143.93 660.03 137.00 620.00
+C 136.87 619.23 136.17 618.81 136.00 618.00
+C 131.54 597.06 143.15 572.71 149.32 554.32 C 155.50 535.93 167.45 518.88 175.70 501.71 C 183.96 484.53 192.21 464.83 201.92 447.92 C 211.63 431.01 216.92 417.34 226.77 399.77 C 236.62 382.20 245.08 365.54 254.00 347.00
+C 254.65 345.66 255.13 344.30 256.00 343.00
+C 257.24 341.15 256.94 338.99 258.92 342.09 C 260.90 345.18 256.81 346.59 257.00 346.00
+M 849.00 505.00 
+C 848.74 505.25 848.00 505.00 848.00 505.00
+C 846.20 538.23 822.17 570.90 808.68 599.68 C 795.19 628.46 772.01 655.25 754.30 680.30 C 736.59 705.35 715.27 726.43 691.00 748.00
+C 688.99 751.05 686.50 753.30 683.00 755.00
+C 668.49 767.77 647.04 780.34 627.00 785.00
+C 623.48 785.82 620.49 785.95 617.00 785.00
+C 594.63 778.90 573.97 770.21 552.00 761.00
+C 549.60 759.99 550.62 760.46 549.00 759.00
+C 539.41 753.81 530.10 746.72 518.00 741.00
+C 514.62 739.40 513.28 737.44 512.00 736.00
+C 492.90 722.90 475.04 707.17 459.00 690.00
+C 461.31 690.45 462.07 687.47 464.00 687.00
+C 465.62 686.05 467.44 685.79 469.00 685.00
+C 474.98 681.96 481.64 676.51 488.00 673.00
+C 489.46 672.19 489.89 672.48 491.00 672.00
+C 494.97 669.03 497.50 665.56 502.00 663.00
+C 503.46 661.63 503.91 660.52 505.00 660.00
+C 508.54 658.32 511.14 656.67 514.00 655.00
+C 516.27 653.16 519.67 649.24 522.00 647.00
+C 525.28 643.84 528.82 640.18 532.00 637.00
+C 535.25 633.75 538.79 630.21 542.00 627.00
+C 567.16 601.84 585.19 566.52 603.00 532.00
+C 603.30 530.89 602.97 530.69 604.00 529.00
+C 609.11 516.46 613.11 507.33 628.00 508.00 C 642.89 508.67 653.33 506.63 667.00 506.00 C 680.67 505.37 694.45 504.56 709.00 504.00
+C 714.85 502.77 721.20 500.84 729.00 501.00
+C 750.53 501.43 773.29 500.00 794.00 502.00
+C 811.65 500.29 830.18 500.10 846.00 495.00
+C 846.54 494.84 847.95 492.38 850.00 493.00
+C 849.37 496.83 851.28 501.99 849.00 505.00
+M 561.00 513.00 
+C 554.63 531.78 542.12 548.27 532.70 565.70 C 523.27 583.12 505.22 594.98 495.00 610.00
+C 493.87 611.66 490.73 614.67 488.00 617.00
+C 484.89 619.65 481.27 621.91 479.00 623.00
+C 459.38 632.45 447.21 649.21 424.00 656.00
+C 404.43 629.26 383.41 602.51 366.00 571.00
+C 364.93 569.59 363.97 569.31 363.00 567.00
+C 359.55 558.79 354.40 545.51 350.00 542.00
+C 349.38 541.50 349.36 541.25 349.00 540.00
+C 348.31 537.61 347.17 535.96 346.00 534.00
+C 345.86 533.76 346.31 533.95 346.00 532.00
+C 345.25 530.34 343.54 528.33 344.00 526.00
+C 358.00 526.00 372.00 526.00 386.00 526.00
+C 389.77 525.20 396.14 524.00 402.00 524.00
+C 405.00 524.00 408.00 524.00 411.00 524.00
+C 424.40 524.00 436.05 521.13 449.00 521.00
+C 452.71 519.86 454.18 519.63 458.00 520.00
+C 469.44 521.11 481.68 518.73 492.00 517.00
+C 494.37 516.60 497.98 517.07 500.00 517.00
+C 501.44 516.74 502.50 516.21 504.00 516.00
+C 512.84 514.75 524.12 514.76 532.67 514.33 C 541.22 513.90 548.46 511.19 557.00 512.00
+C 557.21 511.95 555.59 509.07 560.00 510.00 C 564.42 510.93 561.64 511.10 561.00 513.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#50B08A" stroke-opacity="0.36" stroke-width="0.3"><path d="
+M 322.00 180.00 
+C 323.09 179.29 324.42 178.02 326.00 176.00
+C 324.64 177.22 323.32 178.68 322.00 180.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3EAC77" stroke-opacity="0.17" stroke-width="0.3"><path d="
+M 440.00 178.00 
+C 449.15 177.75 458.01 178.66 467.00 179.00
+C 465.21 178.54 454.76 175.36 449.00 177.00 C 443.24 178.64 444.66 176.86 440.00 178.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#000000" stroke-opacity="0.00" stroke-width="0.3"><path d="
+M 419.00 181.00 
+C 416.32 181.74 414.40 182.37 411.00 183.00
+C 408.05 183.55 405.80 185.20 403.00 186.00
+C 400.35 186.76 397.67 187.13 395.00 188.00
+C 390.72 189.39 387.09 191.28 383.00 193.00
+C 382.58 193.18 381.27 192.75 381.00 193.00
+C 365.66 203.76 344.70 215.60 336.00 233.00
+C 335.01 234.99 332.03 236.97 332.00 237.00
+C 327.55 244.99 323.55 250.62 320.78 258.78 C 318.01 266.93 314.36 275.82 311.99 284.99 C 309.63 294.17 307.52 302.90 305.99 311.99 C 304.46 321.09 302.71 332.66 302.00 343.00 C 301.29 353.34 303.72 361.72 302.00 372.00 C 300.28 382.28 304.43 394.56 305.60 403.26 C 306.77 411.95 306.68 423.44 310.02 431.98 C 313.37 440.51 313.00 452.04 317.22 459.78 C 321.45 467.52 320.05 479.88 326.00 486.00
+C 329.72 483.87 332.46 484.96 337.00 485.00
+C 346.74 485.08 359.31 482.79 369.00 481.00
+C 371.05 480.62 373.20 480.93 375.00 481.00
+C 415.34 476.03 455.70 471.00 497.00 471.00
+C 499.42 470.77 502.91 470.00 506.00 470.00
+C 525.67 470.00 546.33 463.21 566.00 465.00
+C 565.36 464.52 563.71 465.38 563.00 465.00
+C 564.81 462.65 568.20 464.51 570.00 466.00
+C 582.84 464.60 594.58 463.00 607.00 463.00
+C 609.42 462.77 612.91 462.00 616.00 462.00
+C 619.23 462.00 623.50 461.04 626.00 461.00
+C 624.38 460.73 622.63 461.20 621.00 461.00
+C 625.16 458.45 630.41 461.36 635.00 460.00
+C 644.18 460.40 652.13 459.97 661.00 459.00
+C 663.58 458.72 666.84 457.81 670.00 458.00
+C 674.48 458.27 678.30 458.26 683.00 458.00
+C 691.28 457.55 699.71 458.00 708.00 458.00
+C 713.12 458.00 718.55 457.61 723.00 457.00
+C 718.83 457.00 713.34 457.82 710.00 456.00
+C 714.80 455.67 722.31 455.34 727.00 457.00
+C 735.35 458.02 744.37 457.16 753.00 458.00
+C 754.64 457.56 755.16 456.29 757.00 456.00
+C 764.09 454.88 773.23 456.00 781.00 456.00
+C 785.08 456.00 789.66 456.68 793.00 457.00
+C 805.12 456.43 816.40 457.96 827.00 455.00
+C 820.51 446.94 813.73 439.51 808.00 434.00
+C 802.68 428.89 797.95 423.35 793.00 418.00
+C 782.00 408.96 768.99 396.16 760.00 385.00
+C 757.71 382.75 754.39 379.16 752.00 377.00
+C 746.68 372.20 738.56 364.56 732.00 358.00
+C 724.51 353.39 717.05 343.12 710.92 338.13 C 704.79 333.14 698.87 327.35 692.00 320.00
+C 690.87 319.20 687.82 317.31 686.00 315.00
+C 683.00 311.20 679.06 308.06 675.00 304.00
+C 673.72 303.17 671.76 301.17 671.00 300.00
+C 635.41 264.40 596.04 227.24 553.00 203.00
+C 551.06 201.91 548.68 199.83 547.00 199.00
+C 543.96 198.10 540.89 197.31 538.00 196.00
+C 535.88 195.04 534.17 193.91 532.00 193.00
+C 522.48 189.03 512.05 186.04 502.00 184.00
+C 498.22 183.23 493.81 181.79 490.00 181.00
+C 482.32 179.41 475.09 179.31 467.00 179.00
+C 458.01 178.66 449.15 177.75 440.00 178.00
+C 433.72 179.53 426.10 180.65 419.00 181.00
+M 304.00 374.00 
+C 305.21 380.27 301.10 377.91 304.00 374.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3CC06B" stroke-opacity="0.30" stroke-width="0.3"><path d="
+M 411.00 183.00 
+C 414.40 182.37 416.32 181.74 419.00 181.00
+C 415.79 181.16 413.61 181.82 411.00 183.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3BAF76" stroke-opacity="0.27" stroke-width="0.3"><path d="
+M 490.00 181.00 
+C 493.81 181.79 498.22 183.23 502.00 184.00
+C 497.06 181.82 495.17 181.08 490.00 181.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#31B27B" stroke-opacity="0.20" stroke-width="0.3"><path d="
+M 395.00 188.00 
+C 397.67 187.13 400.35 186.76 403.00 186.00
+C 399.09 186.43 398.87 185.87 395.00 188.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#4ADEA8" stroke-opacity="0.21" stroke-width="0.3"><path d="
+M 615.00 191.00 
+C 613.23 189.56 610.71 188.31 609.00 187.00
+C 610.82 188.89 613.86 190.35 615.00 191.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#46CD83" stroke-opacity="0.43" stroke-width="0.3"><path d="
+M 381.00 193.00 
+C 381.27 192.75 382.58 193.18 383.00 193.00
+C 381.85 193.22 381.18 192.87 381.00 193.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#43B374" stroke-opacity="0.26" stroke-width="0.3"><path d="
+M 532.00 193.00 
+C 534.17 193.91 535.88 195.04 538.00 196.00
+C 537.10 195.36 537.22 193.09 535.23 192.78 C 533.23 192.48 532.90 193.17 532.00 193.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#55B086" stroke-opacity="0.25" stroke-width="0.3"><path d="
+M 553.00 203.00 
+C 550.74 201.09 550.64 200.07 547.00 199.00
+C 548.68 199.83 551.06 201.91 553.00 203.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#011E16" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 332.00 237.00 
+C 332.03 236.97 335.01 234.99 336.00 233.00
+C 335.73 233.36 333.29 234.69 332.00 237.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#46C475" stroke-opacity="0.29" stroke-width="0.3"><path d="
+M 701.00 267.00 
+C 697.94 264.41 694.08 260.63 691.00 258.00
+C 693.87 261.49 696.90 264.97 701.00 267.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#39D5A3" stroke-opacity="0.22" stroke-width="0.3"><path d="
+M 738.00 301.00 
+C 738.00 301.00 738.20 300.40 738.00 300.00
+C 734.36 299.40 730.62 293.57 728.00 291.00
+C 725.38 288.43 722.86 286.45 720.00 284.00
+C 723.96 288.63 731.38 300.29 738.00 301.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#1D322C" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 728.00 291.00 
+C 730.62 293.57 734.36 299.40 738.00 300.00
+C 736.06 296.03 730.17 292.53 728.00 291.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#0E2B18" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 675.00 304.00 
+C 673.78 302.78 672.26 301.26 671.00 300.00
+C 671.76 301.17 673.72 303.17 675.00 304.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#021A14" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 692.00 320.00 
+C 690.16 318.03 687.74 316.55 686.00 315.00
+C 687.82 317.31 690.87 319.20 692.00 320.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#1B2725" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 777.00 339.00 
+C 777.33 339.36 777.71 340.52 778.00 341.00
+C 779.89 343.07 782.47 343.43 784.00 346.00
+C 784.25 342.88 778.65 340.17 777.00 339.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#30D485" stroke-opacity="0.45" stroke-width="0.3"><path d="
+M 256.00 343.00 
+C 256.03 343.36 256.93 345.03 257.00 346.00
+C 256.81 346.59 260.90 345.18 258.92 342.09 C 256.94 338.99 257.24 341.15 256.00 343.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#42BF81" stroke-opacity="0.33" stroke-width="0.3"><path d="
+M 834.00 397.00 
+C 829.35 391.02 822.30 382.88 815.00 377.00
+C 811.73 374.37 808.46 369.87 807.00 368.00
+C 800.59 361.95 794.19 354.93 788.00 349.00
+C 787.18 348.21 785.91 347.61 785.00 347.00
+C 784.69 346.79 784.19 346.32 784.00 346.00
+C 782.47 343.43 779.89 343.07 778.00 341.00
+C 784.57 351.80 797.27 359.71 805.75 369.25 C 814.24 378.79 824.31 388.72 834.00 397.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3CB677" stroke-opacity="0.10" stroke-width="0.3"><path d="
+M 254.00 347.00 
+C 253.95 346.33 255.84 349.86 256.00 351.00
+C 256.25 349.62 257.14 348.09 257.00 346.00
+C 256.93 345.03 256.03 343.36 256.00 343.00
+C 255.13 344.30 254.65 345.66 254.00 347.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#247122" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 785.00 347.00 
+C 785.91 347.61 787.18 348.21 788.00 349.00
+C 786.49 347.31 786.61 346.85 785.00 347.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#000000" stroke-opacity="0.00" stroke-width="0.3"><path d="
+M 136.00 618.00 
+C 136.01 616.21 138.06 612.53 137.00 610.00
+C 138.54 612.28 138.72 617.79 137.00 620.00
+C 143.93 660.03 156.69 698.69 186.00 728.00
+C 188.75 730.75 190.95 733.02 193.00 736.00
+C 193.98 737.12 194.80 738.00 196.00 739.00
+C 198.06 740.13 202.76 743.97 204.00 745.00
+C 210.38 748.36 217.04 753.12 224.00 758.00
+C 226.33 759.03 228.90 759.93 231.00 761.00
+C 249.58 766.55 265.02 773.66 286.00 775.00 C 306.98 776.34 331.70 777.31 352.00 779.00
+C 353.98 778.82 355.56 777.90 358.00 778.00
+C 368.94 778.45 381.34 780.73 392.00 781.00
+C 397.39 780.55 403.58 779.84 409.00 781.00
+C 412.52 781.76 416.78 782.00 421.00 782.00
+C 428.55 782.00 436.48 781.29 444.00 782.00
+C 448.15 782.39 452.51 783.00 457.00 783.00
+C 472.06 783.00 486.37 784.10 501.00 785.00
+C 502.35 784.14 500.75 782.83 500.00 782.00
+C 473.47 763.51 450.95 746.72 427.00 725.00
+C 425.13 723.93 417.59 718.06 415.75 715.25 C 413.91 712.43 404.26 705.66 406.00 704.00
+C 403.43 700.32 400.18 697.08 397.00 694.00
+C 394.58 692.43 391.36 688.52 390.00 686.00
+C 376.24 669.41 366.62 655.76 356.30 640.70 C 345.98 625.64 333.38 605.88 325.00 590.00
+C 324.11 589.11 322.92 589.54 322.00 588.00
+C 318.93 582.86 317.48 576.21 314.00 571.00
+C 313.62 570.65 312.78 571.38 312.00 569.00
+C 309.44 561.19 305.22 551.90 301.31 543.69 C 297.39 535.49 294.12 529.05 290.32 519.68 C 286.52 510.31 284.37 505.15 281.98 497.02 C 279.58 488.90 274.97 478.27 272.98 469.02 C 270.98 459.78 265.94 448.78 264.35 439.69 C 262.76 430.61 260.99 420.49 259.99 411.01 C 259.00 401.52 255.82 388.48 256.65 380.70 C 257.48 372.91 254.72 358.05 256.00 351.00
+C 255.84 349.86 253.95 346.33 254.00 347.00
+C 245.08 365.54 236.62 382.20 226.77 399.77 C 216.92 417.34 211.63 431.01 201.92 447.92 C 192.21 464.83 183.96 484.53 175.70 501.71 C 167.45 518.88 155.50 535.93 149.32 554.32 C 143.15 572.71 131.54 597.06 136.00 618.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#5CC38A" stroke-opacity="0.39" stroke-width="0.3"><path d="
+M 732.00 358.00 
+C 738.56 364.56 746.68 372.20 752.00 377.00
+C 745.71 370.71 738.42 361.95 732.00 358.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#5CA993" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 815.00 377.00 
+C 812.02 374.19 809.92 370.75 807.00 368.00
+C 808.46 369.87 811.73 374.37 815.00 377.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#2C5144" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 304.00 374.00 
+C 301.10 377.91 305.21 380.27 304.00 374.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#58CB88" stroke-opacity="0.26" stroke-width="0.3"><path d="
+M 760.00 385.00 
+C 757.64 382.07 754.67 379.67 752.00 377.00
+C 754.39 379.16 757.71 382.75 760.00 385.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#55C683" stroke-opacity="0.29" stroke-width="0.3"><path d="
+M 808.00 434.00 
+C 804.79 429.61 798.58 422.59 793.00 418.00
+C 797.95 423.35 802.68 428.89 808.00 434.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#007264" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 723.00 457.00 
+C 724.30 457.00 725.71 456.84 727.00 457.00
+C 722.31 455.34 714.80 455.67 710.00 456.00
+C 713.34 457.82 718.83 457.00 723.00 457.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#36BD6E" stroke-opacity="0.45" stroke-width="0.3"><path d="
+M 753.00 458.00 
+C 755.02 460.22 759.16 458.41 762.00 459.00
+C 761.08 459.18 757.44 456.00 757.00 456.00
+C 755.16 456.29 754.64 457.56 753.00 458.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#2C6E56" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 793.00 457.00 
+C 789.66 456.68 785.08 456.00 781.00 456.00
+C 784.34 456.32 788.92 457.00 793.00 457.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#2C826D" stroke-opacity="0.05" stroke-width="0.3"><path d="
+M 661.00 459.00 
+C 662.30 459.06 664.92 459.46 667.00 460.00 C 669.07 460.54 671.48 457.78 670.00 458.00
+C 666.84 457.81 663.58 458.72 661.00 459.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3B9584" stroke-opacity="0.13" stroke-width="0.3"><path d="
+M 708.00 458.00 
+C 699.71 458.00 691.28 457.55 683.00 458.00
+C 690.70 458.33 700.18 458.76 708.00 458.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#0F5746" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 626.00 461.00 
+C 630.22 461.69 631.97 460.42 635.00 460.00
+C 630.41 461.36 625.16 458.45 621.00 461.00
+C 622.63 461.20 624.38 460.73 626.00 461.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#4D8F85" stroke-opacity="0.09" stroke-width="0.3"><path d="
+M 607.00 463.00 
+C 610.09 463.00 613.58 462.23 616.00 462.00
+C 612.91 462.00 609.42 462.77 607.00 463.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#27975B" stroke-opacity="0.26" stroke-width="0.3"><path d="
+M 566.00 465.00 
+C 568.27 466.69 567.27 466.30 570.00 466.00
+C 568.20 464.51 564.81 462.65 563.00 465.00
+C 563.71 465.38 565.36 464.52 566.00 465.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#4BA08C" stroke-opacity="0.13" stroke-width="0.3"><path d="
+M 497.00 471.00 
+C 500.09 471.00 503.58 470.23 506.00 470.00
+C 502.91 470.00 499.42 470.77 497.00 471.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#319E6D" stroke-opacity="0.06" stroke-width="0.3"><path d="
+M 369.00 481.00 
+C 370.35 480.98 373.38 481.20 375.00 481.00
+C 373.20 480.93 371.05 480.62 369.00 481.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#36B37B" stroke-opacity="0.38" stroke-width="0.3"><path d="
+M 326.00 486.00 
+C 329.67 489.78 333.64 486.26 337.00 485.00
+C 332.46 484.96 329.72 483.87 326.00 486.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#407858" stroke-opacity="0.13" stroke-width="0.3"><path d="
+M 894.00 501.00 
+C 894.00 497.04 894.31 492.94 894.00 489.00
+C 893.94 492.36 893.66 497.46 894.00 501.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#45C97E" stroke-opacity="0.62" stroke-width="0.3"><path d="
+M 846.00 495.00 
+C 846.45 494.85 847.65 494.77 848.00 495.00
+C 849.91 496.24 849.20 502.77 849.00 505.00
+C 851.28 501.99 849.37 496.83 850.00 493.00
+C 847.95 492.38 846.54 494.84 846.00 495.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#000000" stroke-opacity="0.00" stroke-width="0.3"><path d="
+M 794.00 502.00 
+C 787.98 502.58 780.71 503.00 774.00 503.00
+C 770.67 503.00 767.33 503.00 764.00 503.00
+C 752.33 503.00 740.67 503.00 729.00 503.00
+C 722.07 503.00 715.72 503.74 709.00 504.00
+C 694.45 504.56 680.67 505.37 667.00 506.00 C 653.33 506.63 642.89 508.67 628.00 508.00 C 613.11 507.33 609.11 516.46 604.00 529.00
+C 603.61 529.96 603.52 531.00 603.00 532.00
+C 585.19 566.52 567.16 601.84 542.00 627.00
+C 539.97 630.14 535.00 635.06 532.00 637.00
+C 528.82 640.18 525.28 643.84 522.00 647.00
+C 520.81 648.66 517.31 653.07 514.00 655.00
+C 511.14 656.67 508.54 658.32 505.00 660.00
+C 503.96 660.84 502.48 662.73 502.00 663.00
+C 497.50 665.56 494.97 669.03 491.00 672.00
+C 489.58 673.06 488.63 672.82 488.00 673.00
+C 481.64 676.51 474.98 681.96 469.00 685.00
+C 467.96 685.89 468.18 686.19 466.77 687.77 C 465.35 689.34 463.29 687.21 464.00 687.00
+C 462.07 687.47 461.31 690.45 459.00 690.00
+C 475.04 707.17 492.90 722.90 512.00 736.00
+C 514.30 737.58 515.83 739.38 518.00 741.00
+C 530.10 746.72 539.41 753.81 549.00 759.00
+C 550.20 759.65 550.94 760.24 552.00 761.00
+C 573.97 770.21 594.63 778.90 617.00 785.00
+C 618.67 785.25 625.36 785.21 627.00 785.00
+C 647.04 780.34 668.49 767.77 683.00 755.00
+C 685.74 752.59 688.21 750.48 691.00 748.00
+C 715.27 726.43 736.59 705.35 754.30 680.30 C 772.01 655.25 795.19 628.46 808.68 599.68 C 822.17 570.90 846.20 538.23 848.00 505.00
+C 848.13 502.58 848.97 497.17 848.00 495.00
+C 847.65 494.77 846.45 494.85 846.00 495.00
+C 830.18 500.10 811.65 500.29 794.00 502.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#377B57" stroke-opacity="0.06" stroke-width="0.3"><path d="
+M 848.00 505.00 
+C 848.00 505.00 848.74 505.25 849.00 505.00
+C 849.20 502.77 849.91 496.24 848.00 495.00
+C 848.97 497.17 848.13 502.58 848.00 505.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#2BAA68" stroke-opacity="0.51" stroke-width="0.3"><path d="
+M 709.00 504.00 
+C 715.72 503.74 722.07 503.00 729.00 503.00
+C 728.81 502.92 729.14 501.05 729.00 501.00
+C 721.20 500.84 714.85 502.77 709.00 504.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3AA671" stroke-opacity="0.27" stroke-width="0.3"><path d="
+M 729.00 503.00 
+C 740.67 503.00 752.33 503.00 764.00 503.00
+C 767.14 502.70 770.92 502.70 774.00 503.00
+C 780.71 503.00 787.98 502.58 794.00 502.00
+C 773.29 500.00 750.53 501.43 729.00 501.00
+C 729.14 501.05 728.81 502.92 729.00 503.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#55AA55" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 764.00 503.00 
+C 767.33 503.00 770.67 503.00 774.00 503.00
+C 770.92 502.70 767.14 502.70 764.00 503.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#35BC78" stroke-opacity="0.21" stroke-width="0.3"><path d="
+M 557.00 512.00 
+C 558.61 512.15 560.30 510.57 561.00 513.00
+C 561.64 511.10 564.42 510.93 560.00 510.00 C 555.59 509.07 557.21 511.95 557.00 512.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#000000" stroke-opacity="0.00" stroke-width="0.3"><path d="
+M 504.00 516.00 
+C 501.59 516.49 499.71 518.37 496.00 518.00
+C 494.20 518.13 493.55 517.22 492.00 517.00
+C 481.68 518.73 469.44 521.11 458.00 520.00
+C 458.05 519.99 454.75 523.09 453.00 522.00 C 451.25 520.90 450.20 520.99 449.00 521.00
+C 436.05 521.13 424.40 524.00 411.00 524.00
+C 408.69 524.22 404.92 524.77 402.00 525.00
+C 396.78 525.41 391.53 526.00 386.00 526.00
+C 372.00 526.00 358.00 526.00 344.00 526.00
+C 343.54 528.33 345.25 530.34 346.00 532.00
+C 345.80 531.57 345.71 532.79 346.00 534.00
+C 347.17 535.96 348.31 537.61 349.00 540.00
+C 349.36 540.56 349.92 538.46 350.74 539.40 C 351.56 540.34 349.59 541.22 350.00 542.00
+C 354.40 545.51 359.55 558.79 363.00 567.00
+C 362.83 566.78 365.96 565.59 365.75 567.27 C 365.54 568.94 365.43 569.34 366.00 571.00
+C 383.41 602.51 404.43 629.26 424.00 656.00
+C 447.21 649.21 459.38 632.45 479.00 623.00
+C 481.73 620.61 485.50 617.90 489.00 615.00
+C 490.77 612.80 493.26 611.67 495.00 610.00
+C 505.22 594.98 523.27 583.12 532.70 565.70 C 542.12 548.27 554.63 531.78 561.00 513.00
+C 560.30 510.57 558.61 512.15 557.00 512.00
+C 548.46 511.19 541.22 513.90 532.67 514.33 C 524.12 514.76 512.84 514.75 504.00 516.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#409F5F" stroke-opacity="0.08" stroke-width="0.3"><path d="
+M 492.00 517.00 
+C 493.55 517.22 494.20 518.13 496.00 518.00
+C 496.44 517.97 499.04 517.18 500.00 517.00
+C 497.98 517.07 494.37 516.60 492.00 517.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#1E4C37" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 500.00 517.00 
+C 499.04 517.18 496.44 517.97 496.00 518.00
+C 499.71 518.37 501.59 516.49 504.00 516.00
+C 502.50 516.21 501.44 516.74 500.00 517.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#219564" stroke-opacity="0.24" stroke-width="0.3"><path d="
+M 449.00 521.00 
+C 450.20 520.99 451.25 520.90 453.00 522.00 C 454.75 523.09 458.05 519.99 458.00 520.00
+C 454.18 519.63 452.71 519.86 449.00 521.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#39AA7C" stroke-opacity="0.27" stroke-width="0.3"><path d="
+M 386.00 526.00 
+C 391.53 526.00 396.78 525.41 402.00 525.00
+C 402.13 524.96 402.00 524.00 402.00 524.00
+C 396.14 524.00 389.77 525.20 386.00 526.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#409F6A" stroke-opacity="0.10" stroke-width="0.3"><path d="
+M 402.00 525.00 
+C 404.92 524.77 408.69 524.22 411.00 524.00
+C 408.00 524.00 405.00 524.00 402.00 524.00
+C 402.00 524.00 402.13 524.96 402.00 525.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#4BE087" stroke-opacity="0.34" stroke-width="0.3"><path d="
+M 603.00 532.00 
+C 603.52 531.00 603.61 529.96 604.00 529.00
+C 602.97 530.69 603.30 530.89 603.00 532.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#1D9468" stroke-opacity="0.26" stroke-width="0.3"><path d="
+M 346.00 532.00 
+C 346.31 533.95 345.86 533.76 346.00 534.00
+C 345.71 532.79 345.80 531.57 346.00 532.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#27A170" stroke-opacity="0.27" stroke-width="0.3"><path d="
+M 349.00 540.00 
+C 349.36 541.25 349.38 541.50 350.00 542.00
+C 349.59 541.22 351.56 540.34 350.74 539.40 C 349.92 538.46 349.36 540.56 349.00 540.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#39B07B" stroke-opacity="0.15" stroke-width="0.3"><path d="
+M 363.00 567.00 
+C 363.97 569.31 364.93 569.59 366.00 571.00
+C 365.43 569.34 365.54 568.94 365.75 567.27 C 365.96 565.59 362.83 566.78 363.00 567.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#062A06" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 314.00 571.00 
+C 313.54 570.31 312.14 569.21 312.00 569.00
+C 312.78 571.38 313.62 570.65 314.00 571.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#07352E" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 322.00 588.00 
+C 322.92 589.54 324.11 589.11 325.00 590.00
+C 323.98 588.06 322.05 588.07 322.00 588.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3B5646" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 136.00 618.00 
+C 136.17 618.81 136.87 619.23 137.00 620.00
+C 138.72 617.79 138.54 612.28 137.00 610.00
+C 138.06 612.53 136.01 616.21 136.00 618.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#39C67A" stroke-opacity="0.43" stroke-width="0.3"><path d="
+M 489.00 615.00 
+C 488.60 615.50 488.38 616.59 488.00 617.00
+C 490.73 614.67 493.87 611.66 495.00 610.00
+C 493.26 611.67 490.77 612.80 489.00 615.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#38C773" stroke-opacity="0.19" stroke-width="0.3"><path d="
+M 479.00 623.00 
+C 481.27 621.91 484.89 619.65 488.00 617.00
+C 488.38 616.59 488.60 615.50 489.00 615.00
+C 485.50 617.90 481.73 620.61 479.00 623.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#02230B" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 532.00 637.00 
+C 535.00 635.06 539.97 630.14 542.00 627.00
+C 538.79 630.21 535.25 633.75 532.00 637.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#011F12" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 514.00 655.00 
+C 517.31 653.07 520.81 648.66 522.00 647.00
+C 519.67 649.24 516.27 653.16 514.00 655.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#2B9757" stroke-opacity="0.17" stroke-width="0.3"><path d="
+M 502.00 663.00 
+C 502.48 662.73 503.96 660.84 505.00 660.00
+C 503.91 660.52 503.46 661.63 502.00 663.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#002A14" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 488.00 673.00 
+C 488.63 672.82 489.58 673.06 491.00 672.00
+C 489.89 672.48 489.46 672.19 488.00 673.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#2ECD71" stroke-opacity="0.20" stroke-width="0.3"><path d="
+M 810.00 680.00 
+C 810.35 679.54 812.71 677.32 814.00 675.00
+C 813.93 675.08 811.04 678.05 810.00 680.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#062A18" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 464.00 687.00 
+C 463.29 687.21 465.35 689.34 466.77 687.77 C 468.18 686.19 467.96 685.89 469.00 685.00
+C 467.44 685.79 465.62 686.05 464.00 687.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#0E2119" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 397.00 694.00 
+C 394.38 691.46 392.75 689.31 390.00 686.00
+C 391.36 688.52 394.58 692.43 397.00 694.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#001810" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 427.00 725.00 
+C 424.55 722.78 421.79 719.13 420.00 717.00
+C 415.62 712.87 410.65 709.52 407.00 704.00
+C 407.00 704.00 406.16 704.23 406.00 704.00
+C 404.26 705.66 413.91 712.43 415.75 715.25 C 417.59 718.06 425.13 723.93 427.00 725.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#58CE7F" stroke-opacity="0.27" stroke-width="0.3"><path d="
+M 420.00 717.00 
+C 416.67 713.02 411.81 706.35 407.00 704.00
+C 410.65 709.52 415.62 712.87 420.00 717.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#00321B" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 790.00 709.00 
+C 790.55 708.49 793.38 704.91 794.00 704.00
+C 792.64 705.40 791.28 707.26 790.00 709.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#003120" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 782.00 720.00 
+C 784.22 717.90 785.61 716.63 787.00 714.00
+C 785.81 715.52 783.41 718.11 782.00 720.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#1D482A" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 193.00 736.00 
+C 190.95 733.02 188.75 730.75 186.00 728.00
+C 188.24 730.72 190.61 733.28 193.00 736.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#40D298" stroke-opacity="0.27" stroke-width="0.3"><path d="
+M 518.00 741.00 
+C 515.83 739.38 514.30 737.58 512.00 736.00
+C 513.28 737.44 514.62 739.40 518.00 741.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#0A3121" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 196.00 739.00 
+C 198.47 741.05 201.31 743.59 204.00 745.00
+C 202.76 743.97 198.06 740.13 196.00 739.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#41B788" stroke-opacity="0.31" stroke-width="0.3"><path d="
+M 683.00 755.00 
+C 686.50 753.30 688.99 751.05 691.00 748.00
+C 688.21 750.48 685.74 752.59 683.00 755.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#072618" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 735.00 771.00 
+C 740.70 767.58 747.27 759.21 750.00 755.00
+C 745.44 759.89 739.31 767.46 735.00 771.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#41C0A6" stroke-opacity="0.17" stroke-width="0.3"><path d="
+M 231.00 761.00 
+C 228.90 759.93 226.33 759.03 224.00 758.00
+C 226.50 759.75 228.39 760.22 231.00 761.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#29D1BD" stroke-opacity="0.15" stroke-width="0.3"><path d="
+M 552.00 761.00 
+C 550.94 760.24 550.20 759.65 549.00 759.00
+C 550.62 760.46 549.60 759.99 552.00 761.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#36CC6A" stroke-opacity="0.19" stroke-width="0.3"><path d="
+M 719.00 784.00 
+C 721.92 781.53 724.65 778.20 727.00 776.00
+C 724.58 777.53 720.57 782.13 719.00 784.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#2FBE92" stroke-opacity="0.05" stroke-width="0.3"><path d="
+M 352.00 779.00 
+C 354.43 779.20 356.09 778.24 358.00 778.00
+C 355.56 777.90 353.98 778.82 352.00 779.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#41B07B" stroke-opacity="0.21" stroke-width="0.3"><path d="
+M 181.00 783.00 
+C 178.87 780.79 177.61 780.36 175.00 779.00
+C 177.18 780.87 179.60 782.13 181.00 783.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#00534F" stroke-opacity="0.02" stroke-width="0.3"><path d="
+M 392.00 781.00 
+C 394.90 781.07 398.14 780.53 401.00 781.00
+C 402.22 781.20 403.67 781.74 405.00 782.00
+C 405.80 781.94 407.44 780.92 409.00 781.00
+C 403.58 779.84 397.39 780.55 392.00 781.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#23C988" stroke-opacity="0.57" stroke-width="0.3"><path d="
+M 405.00 782.00 
+C 403.67 781.74 402.22 781.20 401.00 781.00
+C 401.03 784.38 407.41 783.33 409.00 782.00
+C 407.70 781.81 406.28 782.25 405.00 782.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#40C987" stroke-opacity="0.37" stroke-width="0.3"><path d="
+M 500.00 782.00 
+C 500.75 782.83 502.35 784.14 501.00 785.00
+C 501.68 786.65 505.26 786.39 506.00 785.00
+C 504.09 784.71 500.92 782.64 500.00 782.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3A8278" stroke-opacity="0.16" stroke-width="0.3"><path d="
+M 442.00 783.00 
+C 442.53 782.93 443.99 782.00 444.00 782.00
+C 436.48 781.29 428.55 782.00 421.00 782.00
+C 427.10 782.59 435.13 783.85 442.00 783.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#47D5A5" stroke-opacity="0.58" stroke-width="0.3"><path d="
+M 442.00 783.00 
+C 446.65 783.45 452.28 783.46 457.00 783.00
+C 452.51 783.00 448.15 782.39 444.00 782.00
+C 443.99 782.00 442.53 782.93 442.00 783.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#34AB71" stroke-opacity="0.09" stroke-width="0.3"><path d="
+M 617.00 785.00 
+C 620.49 785.95 623.48 785.82 627.00 785.00
+C 625.36 785.21 618.67 785.25 617.00 785.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#46A86F" stroke-opacity="0.20" stroke-width="0.3"><path d="
+M 195.00 793.00 
+C 196.54 794.00 197.20 794.23 199.00 795.00
+C 199.78 795.86 200.85 794.51 198.75 793.26 C 196.64 792.01 196.52 793.46 195.00 793.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3DDF70" stroke-opacity="0.38" stroke-width="0.3"><path d="
+M 689.00 805.00 
+C 689.24 804.84 690.81 804.10 691.00 804.00
+C 690.35 804.25 689.07 804.93 689.00 805.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#50B37D" stroke-opacity="0.24" stroke-width="0.3"><path d="
+M 242.00 813.00 
+C 243.50 813.51 245.09 813.62 247.00 814.00
+C 244.91 813.10 243.71 813.31 242.00 813.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3DA470" stroke-opacity="0.13" stroke-width="0.3"><path d="
+M 428.00 829.00 
+C 430.61 829.25 433.37 829.00 436.00 829.00
+C 435.45 828.88 434.31 826.79 432.01 827.01 C 429.71 827.23 429.17 828.87 428.00 829.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#2EAD79" stroke-opacity="0.18" stroke-width="0.3"><path d="
+M 456.00 829.00 
+C 459.25 829.22 462.46 829.02 465.00 829.00
+C 461.52 828.48 459.03 828.71 456.00 829.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#3FC47E" stroke-opacity="0.34" stroke-width="0.3"><path d="
+M 493.00 830.00 
+C 498.37 830.11 504.27 831.00 510.00 831.00
+C 514.71 830.54 520.60 830.00 526.00 830.00
+C 535.47 830.00 546.36 829.10 555.00 831.00
+C 556.00 831.00 557.00 831.00 558.00 831.00
+C 562.62 829.99 569.45 829.07 574.00 831.00
+C 574.50 831.00 575.50 831.00 576.00 831.00
+C 568.96 829.52 558.31 828.37 549.00 829.00 C 539.69 829.63 529.28 828.72 520.00 829.00 C 510.72 829.28 501.51 828.48 493.00 830.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#808080" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 510.00 831.00 
+C 515.33 831.00 520.67 831.00 526.00 831.00
+C 525.96 831.00 526.00 830.00 526.00 830.00
+C 520.60 830.00 514.71 830.54 510.00 831.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#00FF00" stroke-opacity="0.00" stroke-width="0.3"><path d="
+M 526.00 831.00 
+C 535.67 831.00 545.33 831.00 555.00 831.00
+C 546.36 829.10 535.47 830.00 526.00 830.00
+C 526.00 830.00 525.96 831.00 526.00 831.00 Z"/>
+</g>
+<g fill="None" fill-opacity="0.0" stroke="#4A8080" stroke-opacity="0.01" stroke-width="0.3"><path d="
+M 558.00 831.00 
+C 563.33 831.00 568.67 831.00 574.00 831.00
+C 569.45 829.07 562.62 829.99 558.00 831.00 Z"/>
+</g>
+<g fill="#000000" fill-opacity="0.00" stroke="None">
+<path d="
+M 0.00 1000.00 
+L 1000.00 1000.00
+L 1000.00 0.00
+L 0.00 0.00
+L 0.00 1000.00
+M 440.00 134.00 
+C 441.27 133.82 442.71 134.00 444.00 134.00
+C 450.71 132.48 458.30 132.91 466.00 133.00
+C 468.08 132.64 469.85 132.15 472.00 132.00
+C 470.43 135.84 483.22 133.29 489.00 135.00 C 494.78 136.71 503.77 137.72 510.01 138.99 C 516.25 140.26 522.89 142.20 529.02 143.98 C 535.15 145.75 541.40 148.39 547.22 150.78 C 553.04 153.16 558.41 155.47 564.07 157.93 C 569.74 160.38 574.62 164.03 580.08 166.92 C 585.53 169.82 589.72 172.87 594.70 176.30 C 599.67 179.74 605.07 181.96 609.00 187.00
+C 610.71 188.31 613.23 189.56 615.00 191.00
+C 640.75 211.98 669.65 232.01 691.00 258.00
+C 694.08 260.63 697.94 264.41 701.00 267.00
+C 708.38 270.65 713.29 278.26 720.00 284.00
+C 722.86 286.45 725.38 288.43 728.00 291.00
+C 730.17 292.53 736.06 296.03 738.00 300.00
+C 738.20 300.40 738.00 301.00 738.00 301.00
+C 739.14 305.35 748.40 308.39 750.92 313.08 C 753.44 317.77 760.33 321.72 763.75 326.25 C 767.18 330.77 772.99 334.68 777.00 339.00
+C 778.65 340.17 784.25 342.88 784.00 346.00
+C 784.19 346.32 784.69 346.79 785.00 347.00
+C 786.61 346.85 786.49 347.31 788.00 349.00
+C 794.19 354.93 800.59 361.95 807.00 368.00
+C 809.92 370.75 812.02 374.19 815.00 377.00
+C 822.30 382.88 829.35 391.02 834.00 397.00
+C 862.03 420.95 890.98 450.92 894.00 489.00
+C 894.31 492.94 894.00 497.04 894.00 501.00
+C 894.00 536.81 875.36 566.75 861.70 597.70 C 848.04 628.64 829.05 647.98 814.00 675.00
+C 812.71 677.32 810.35 679.54 810.00 680.00
+C 805.23 688.94 799.93 697.89 794.00 704.00
+C 793.38 704.91 790.55 708.49 790.00 709.00
+C 788.80 710.63 787.94 712.22 787.00 714.00
+C 785.61 716.63 784.22 717.90 782.00 720.00
+C 770.24 731.09 761.83 742.33 750.00 755.00
+C 747.27 759.21 740.70 767.58 735.00 771.00
+C 732.40 772.56 729.46 774.45 727.00 776.00
+C 724.65 778.20 721.92 781.53 719.00 784.00
+C 711.16 790.63 700.55 799.27 691.00 804.00
+C 690.81 804.10 689.24 804.84 689.00 805.00
+C 672.61 816.23 662.98 821.98 644.33 827.33 C 625.68 832.67 596.73 831.00 576.00 831.00
+C 575.50 831.00 574.50 831.00 574.00 831.00
+C 568.67 831.00 563.33 831.00 558.00 831.00
+C 557.00 831.00 556.00 831.00 555.00 831.00
+C 545.33 831.00 535.67 831.00 526.00 831.00
+C 520.67 831.00 515.33 831.00 510.00 831.00
+C 504.27 831.00 498.37 830.11 493.00 830.00
+C 483.44 831.71 474.02 830.35 465.00 829.00
+C 462.46 829.02 459.25 829.22 456.00 829.00
+C 449.40 828.55 442.61 829.00 436.00 829.00
+C 433.37 829.00 430.61 829.25 428.00 829.00
+C 367.86 823.36 305.88 825.89 247.00 814.00
+C 245.09 813.62 243.50 813.51 242.00 813.00
+C 227.20 807.96 213.22 801.10 199.00 795.00
+C 197.20 794.23 196.54 794.00 195.00 793.00
+C 190.14 789.83 184.62 786.77 181.00 783.00
+C 179.60 782.13 177.18 780.87 175.00 779.00
+C 150.79 766.35 137.87 741.32 123.23 718.77 C 108.59 696.22 100.38 667.69 93.67 638.33 C 86.96 608.97 94.27 569.48 105.93 541.93 C 117.58 514.37 130.50 488.99 143.77 462.77 C 157.05 436.55 169.54 411.47 182.92 385.92 C 196.31 360.38 210.52 336.53 224.25 311.25 C 237.99 285.98 252.83 263.80 268.75 239.75 C 284.67 215.71 301.89 200.11 322.00 180.00
+C 323.32 178.68 324.64 177.22 326.00 176.00
+C 339.65 163.75 353.47 155.52 372.07 148.07 C 390.68 140.62 413.01 132.39 434.00 134.00
+C 437.32 133.62 436.27 133.45 440.00 134.00 Z"/>
+</g>
+<g fill="#60D197" fill-opacity="0.44" stroke="None">
+<path d="
+M 434.00 134.00 
+C 435.93 134.15 438.05 134.28 440.00 134.00
+C 436.27 133.45 437.32 133.62 434.00 134.00 Z"/>
+</g>
+<g fill="#39A074" fill-opacity="0.13" stroke="None">
+<path d="
+M 444.00 134.00 
+C 451.37 134.00 459.39 134.15 466.00 133.00
+C 458.30 132.91 450.71 132.48 444.00 134.00 Z"/>
+</g>
+<g fill="#33D58B" fill-opacity="0.97" stroke="None">
+<path d="
+M 466.00 133.00 
+C 459.39 134.15 451.37 134.00 444.00 134.00
+C 442.71 134.00 441.27 133.82 440.00 134.00
+C 438.05 134.28 435.93 134.15 434.00 134.00
+C 413.01 132.39 390.68 140.62 372.07 148.07 C 353.47 155.52 339.65 163.75 326.00 176.00
+C 324.42 178.02 323.09 179.29 322.00 180.00
+C 301.89 200.11 284.67 215.71 268.75 239.75 C 252.83 263.80 237.99 285.98 224.25 311.25 C 210.52 336.53 196.31 360.38 182.92 385.92 C 169.54 411.47 157.05 436.55 143.77 462.77 C 130.50 488.99 117.58 514.37 105.93 541.93 C 94.27 569.48 86.96 608.97 93.67 638.33 C 100.38 667.69 108.59 696.22 123.23 718.77 C 137.87 741.32 150.79 766.35 175.00 779.00
+C 177.61 780.36 178.87 780.79 181.00 783.00
+C 184.62 786.77 190.14 789.83 195.00 793.00
+C 196.52 793.46 196.64 792.01 198.75 793.26 C 200.85 794.51 199.78 795.86 199.00 795.00
+C 213.22 801.10 227.20 807.96 242.00 813.00
+C 243.71 813.31 244.91 813.10 247.00 814.00
+C 305.88 825.89 367.86 823.36 428.00 829.00
+C 429.17 828.87 429.71 827.23 432.01 827.01 C 434.31 826.79 435.45 828.88 436.00 829.00
+C 442.61 829.00 449.40 828.55 456.00 829.00
+C 459.03 828.71 461.52 828.48 465.00 829.00
+C 474.02 830.35 483.44 831.71 493.00 830.00
+C 501.51 828.48 510.72 829.28 520.00 829.00 C 529.28 828.72 539.69 829.63 549.00 829.00 C 558.31 828.37 568.96 829.52 576.00 831.00
+C 596.73 831.00 625.68 832.67 644.33 827.33 C 662.98 821.98 672.61 816.23 689.00 805.00
+C 689.07 804.93 690.35 804.25 691.00 804.00
+C 700.55 799.27 711.16 790.63 719.00 784.00
+C 720.57 782.13 724.58 777.53 727.00 776.00
+C 729.46 774.45 732.40 772.56 735.00 771.00
+C 739.31 767.46 745.44 759.89 750.00 755.00
+C 761.83 742.33 770.24 731.09 782.00 720.00
+C 783.41 718.11 785.81 715.52 787.00 714.00
+C 787.94 712.22 788.80 710.63 790.00 709.00
+C 791.28 707.26 792.64 705.40 794.00 704.00
+C 799.93 697.89 805.23 688.94 810.00 680.00
+C 811.04 678.05 813.93 675.08 814.00 675.00
+C 829.05 647.98 848.04 628.64 861.70 597.70 C 875.36 566.75 894.00 536.81 894.00 501.00
+C 893.66 497.46 893.94 492.36 894.00 489.00
+C 890.98 450.92 862.03 420.95 834.00 397.00
+C 824.31 388.72 814.24 378.79 805.75 369.25 C 797.27 359.71 784.57 351.80 778.00 341.00
+C 777.71 340.52 777.33 339.36 777.00 339.00
+C 772.99 334.68 767.18 330.77 763.75 326.25 C 760.33 321.72 753.44 317.77 750.92 313.08 C 748.40 308.39 739.14 305.35 738.00 301.00
+C 731.38 300.29 723.96 288.63 720.00 284.00
+C 713.29 278.26 708.38 270.65 701.00 267.00
+C 696.90 264.97 693.87 261.49 691.00 258.00
+C 669.65 232.01 640.75 211.98 615.00 191.00
+C 613.86 190.35 610.82 188.89 609.00 187.00
+C 605.07 181.96 599.67 179.74 594.70 176.30 C 589.72 172.87 585.53 169.82 580.08 166.92 C 574.62 164.03 569.74 160.38 564.07 157.93 C 558.41 155.47 553.04 153.16 547.22 150.78 C 541.40 148.39 535.15 145.75 529.02 143.98 C 522.89 142.20 516.25 140.26 510.01 138.99 C 503.77 137.72 494.78 136.71 489.00 135.00 C 483.22 133.29 470.43 135.84 472.00 132.00
+C 469.85 132.15 468.08 132.64 466.00 133.00
+M 467.00 179.00 
+C 475.09 179.31 482.32 179.41 490.00 181.00
+C 495.17 181.08 497.06 181.82 502.00 184.00
+C 512.05 186.04 522.48 189.03 532.00 193.00
+C 532.90 193.17 533.23 192.48 535.23 192.78 C 537.22 193.09 537.10 195.36 538.00 196.00
+C 540.89 197.31 543.96 198.10 547.00 199.00
+C 550.64 200.07 550.74 201.09 553.00 203.00
+C 596.04 227.24 635.41 264.40 671.00 300.00
+C 672.26 301.26 673.78 302.78 675.00 304.00
+C 679.06 308.06 683.00 311.20 686.00 315.00
+C 687.74 316.55 690.16 318.03 692.00 320.00
+C 698.87 327.35 704.79 333.14 710.92 338.13 C 717.05 343.12 724.51 353.39 732.00 358.00
+C 738.42 361.95 745.71 370.71 752.00 377.00
+C 754.67 379.67 757.64 382.07 760.00 385.00
+C 768.99 396.16 782.00 408.96 793.00 418.00
+C 798.58 422.59 804.79 429.61 808.00 434.00
+C 813.73 439.51 820.51 446.94 827.00 455.00
+C 816.40 457.96 805.12 456.43 793.00 457.00
+C 788.92 457.00 784.34 456.32 781.00 456.00
+C 773.23 456.00 764.09 454.88 757.00 456.00
+C 757.44 456.00 761.08 459.18 762.00 459.00
+C 759.16 458.41 755.02 460.22 753.00 458.00
+C 744.37 457.16 735.35 458.02 727.00 457.00
+C 725.71 456.84 724.30 457.00 723.00 457.00
+C 718.55 457.61 713.12 458.00 708.00 458.00
+C 700.18 458.76 690.70 458.33 683.00 458.00
+C 678.30 458.26 674.48 458.27 670.00 458.00
+C 671.48 457.78 669.07 460.54 667.00 460.00 C 664.92 459.46 662.30 459.06 661.00 459.00
+C 652.13 459.97 644.18 460.40 635.00 460.00
+C 631.97 460.42 630.22 461.69 626.00 461.00
+C 623.50 461.04 619.23 462.00 616.00 462.00
+C 613.58 462.23 610.09 463.00 607.00 463.00
+C 594.58 463.00 582.84 464.60 570.00 466.00
+C 567.27 466.30 568.27 466.69 566.00 465.00
+C 546.33 463.21 525.67 470.00 506.00 470.00
+C 503.58 470.23 500.09 471.00 497.00 471.00
+C 455.70 471.00 415.34 476.03 375.00 481.00
+C 373.38 481.20 370.35 480.98 369.00 481.00
+C 359.31 482.79 346.74 485.08 337.00 485.00
+C 333.64 486.26 329.67 489.78 326.00 486.00
+C 320.05 479.88 321.45 467.52 317.22 459.78 C 313.00 452.04 313.37 440.51 310.02 431.98 C 306.68 423.44 306.77 411.95 305.60 403.26 C 304.43 394.56 300.28 382.28 302.00 372.00 C 303.72 361.72 301.29 353.34 302.00 343.00 C 302.71 332.66 304.46 321.09 305.99 311.99 C 307.52 302.90 309.63 294.17 311.99 284.99 C 314.36 275.82 318.01 266.93 320.78 258.78 C 323.55 250.62 327.55 244.99 332.00 237.00
+C 333.29 234.69 335.73 233.36 336.00 233.00
+C 344.70 215.60 365.66 203.76 381.00 193.00
+C 381.18 192.87 381.85 193.22 383.00 193.00
+C 387.09 191.28 390.72 189.39 395.00 188.00
+C 398.87 185.87 399.09 186.43 403.00 186.00
+C 405.80 185.20 408.05 183.55 411.00 183.00
+C 413.61 181.82 415.79 181.16 419.00 181.00
+C 426.10 180.65 433.72 179.53 440.00 178.00
+C 444.66 176.86 443.24 178.64 449.00 177.00 C 454.76 175.36 465.21 178.54 467.00 179.00
+M 257.00 346.00 
+C 257.14 348.09 256.25 349.62 256.00 351.00
+C 254.72 358.05 257.48 372.91 256.65 380.70 C 255.82 388.48 259.00 401.52 259.99 411.01 C 260.99 420.49 262.76 430.61 264.35 439.69 C 265.94 448.78 270.98 459.78 272.98 469.02 C 274.97 478.27 279.58 488.90 281.98 497.02 C 284.37 505.15 286.52 510.31 290.32 519.68 C 294.12 529.05 297.39 535.49 301.31 543.69 C 305.22 551.90 309.44 561.19 312.00 569.00
+C 312.14 569.21 313.54 570.31 314.00 571.00
+C 317.48 576.21 318.93 582.86 322.00 588.00
+C 322.05 588.07 323.98 588.06 325.00 590.00
+C 333.38 605.88 345.98 625.64 356.30 640.70 C 366.62 655.76 376.24 669.41 390.00 686.00
+C 392.75 689.31 394.38 691.46 397.00 694.00
+C 400.18 697.08 403.43 700.32 406.00 704.00
+C 406.16 704.23 407.00 704.00 407.00 704.00
+C 411.81 706.35 416.67 713.02 420.00 717.00
+C 421.79 719.13 424.55 722.78 427.00 725.00
+C 450.95 746.72 473.47 763.51 500.00 782.00
+C 500.92 782.64 504.09 784.71 506.00 785.00
+C 505.26 786.39 501.68 786.65 501.00 785.00
+C 486.37 784.10 472.06 783.00 457.00 783.00
+C 452.28 783.46 446.65 783.45 442.00 783.00
+C 435.13 783.85 427.10 782.59 421.00 782.00
+C 416.78 782.00 412.52 781.76 409.00 781.00
+C 407.44 780.92 405.80 781.94 405.00 782.00
+C 406.28 782.25 407.70 781.81 409.00 782.00
+C 407.41 783.33 401.03 784.38 401.00 781.00
+C 398.14 780.53 394.90 781.07 392.00 781.00
+C 381.34 780.73 368.94 778.45 358.00 778.00
+C 356.09 778.24 354.43 779.20 352.00 779.00
+C 331.70 777.31 306.98 776.34 286.00 775.00 C 265.02 773.66 249.58 766.55 231.00 761.00
+C 228.39 760.22 226.50 759.75 224.00 758.00
+C 217.04 753.12 210.38 748.36 204.00 745.00
+C 201.31 743.59 198.47 741.05 196.00 739.00
+C 194.80 738.00 193.98 737.12 193.00 736.00
+C 190.61 733.28 188.24 730.72 186.00 728.00
+C 156.69 698.69 143.93 660.03 137.00 620.00
+C 136.87 619.23 136.17 618.81 136.00 618.00
+C 131.54 597.06 143.15 572.71 149.32 554.32 C 155.50 535.93 167.45 518.88 175.70 501.71 C 183.96 484.53 192.21 464.83 201.92 447.92 C 211.63 431.01 216.92 417.34 226.77 399.77 C 236.62 382.20 245.08 365.54 254.00 347.00
+C 254.65 345.66 255.13 344.30 256.00 343.00
+C 257.24 341.15 256.94 338.99 258.92 342.09 C 260.90 345.18 256.81 346.59 257.00 346.00
+M 849.00 505.00 
+C 848.74 505.25 848.00 505.00 848.00 505.00
+C 846.20 538.23 822.17 570.90 808.68 599.68 C 795.19 628.46 772.01 655.25 754.30 680.30 C 736.59 705.35 715.27 726.43 691.00 748.00
+C 688.99 751.05 686.50 753.30 683.00 755.00
+C 668.49 767.77 647.04 780.34 627.00 785.00
+C 623.48 785.82 620.49 785.95 617.00 785.00
+C 594.63 778.90 573.97 770.21 552.00 761.00
+C 549.60 759.99 550.62 760.46 549.00 759.00
+C 539.41 753.81 530.10 746.72 518.00 741.00
+C 514.62 739.40 513.28 737.44 512.00 736.00
+C 492.90 722.90 475.04 707.17 459.00 690.00
+C 461.31 690.45 462.07 687.47 464.00 687.00
+C 465.62 686.05 467.44 685.79 469.00 685.00
+C 474.98 681.96 481.64 676.51 488.00 673.00
+C 489.46 672.19 489.89 672.48 491.00 672.00
+C 494.97 669.03 497.50 665.56 502.00 663.00
+C 503.46 661.63 503.91 660.52 505.00 660.00
+C 508.54 658.32 511.14 656.67 514.00 655.00
+C 516.27 653.16 519.67 649.24 522.00 647.00
+C 525.28 643.84 528.82 640.18 532.00 637.00
+C 535.25 633.75 538.79 630.21 542.00 627.00
+C 567.16 601.84 585.19 566.52 603.00 532.00
+C 603.30 530.89 602.97 530.69 604.00 529.00
+C 609.11 516.46 613.11 507.33 628.00 508.00 C 642.89 508.67 653.33 506.63 667.00 506.00 C 680.67 505.37 694.45 504.56 709.00 504.00
+C 714.85 502.77 721.20 500.84 729.00 501.00
+C 750.53 501.43 773.29 500.00 794.00 502.00
+C 811.65 500.29 830.18 500.10 846.00 495.00
+C 846.54 494.84 847.95 492.38 850.00 493.00
+C 849.37 496.83 851.28 501.99 849.00 505.00
+M 561.00 513.00 
+C 554.63 531.78 542.12 548.27 532.70 565.70 C 523.27 583.12 505.22 594.98 495.00 610.00
+C 493.87 611.66 490.73 614.67 488.00 617.00
+C 484.89 619.65 481.27 621.91 479.00 623.00
+C 459.38 632.45 447.21 649.21 424.00 656.00
+C 404.43 629.26 383.41 602.51 366.00 571.00
+C 364.93 569.59 363.97 569.31 363.00 567.00
+C 359.55 558.79 354.40 545.51 350.00 542.00
+C 349.38 541.50 349.36 541.25 349.00 540.00
+C 348.31 537.61 347.17 535.96 346.00 534.00
+C 345.86 533.76 346.31 533.95 346.00 532.00
+C 345.25 530.34 343.54 528.33 344.00 526.00
+C 358.00 526.00 372.00 526.00 386.00 526.00
+C 389.77 525.20 396.14 524.00 402.00 524.00
+C 405.00 524.00 408.00 524.00 411.00 524.00
+C 424.40 524.00 436.05 521.13 449.00 521.00
+C 452.71 519.86 454.18 519.63 458.00 520.00
+C 469.44 521.11 481.68 518.73 492.00 517.00
+C 494.37 516.60 497.98 517.07 500.00 517.00
+C 501.44 516.74 502.50 516.21 504.00 516.00
+C 512.84 514.75 524.12 514.76 532.67 514.33 C 541.22 513.90 548.46 511.19 557.00 512.00
+C 557.21 511.95 555.59 509.07 560.00 510.00 C 564.42 510.93 561.64 511.10 561.00 513.00 Z"/>
+</g>
+<g fill="#50B08A" fill-opacity="0.36" stroke="None">
+<path d="
+M 322.00 180.00 
+C 323.09 179.29 324.42 178.02 326.00 176.00
+C 324.64 177.22 323.32 178.68 322.00 180.00 Z"/>
+</g>
+<g fill="#3EAC77" fill-opacity="0.17" stroke="None">
+<path d="
+M 440.00 178.00 
+C 449.15 177.75 458.01 178.66 467.00 179.00
+C 465.21 178.54 454.76 175.36 449.00 177.00 C 443.24 178.64 444.66 176.86 440.00 178.00 Z"/>
+</g>
+<g fill="#000000" fill-opacity="0.00" stroke="None">
+<path d="
+M 419.00 181.00 
+C 416.32 181.74 414.40 182.37 411.00 183.00
+C 408.05 183.55 405.80 185.20 403.00 186.00
+C 400.35 186.76 397.67 187.13 395.00 188.00
+C 390.72 189.39 387.09 191.28 383.00 193.00
+C 382.58 193.18 381.27 192.75 381.00 193.00
+C 365.66 203.76 344.70 215.60 336.00 233.00
+C 335.01 234.99 332.03 236.97 332.00 237.00
+C 327.55 244.99 323.55 250.62 320.78 258.78 C 318.01 266.93 314.36 275.82 311.99 284.99 C 309.63 294.17 307.52 302.90 305.99 311.99 C 304.46 321.09 302.71 332.66 302.00 343.00 C 301.29 353.34 303.72 361.72 302.00 372.00 C 300.28 382.28 304.43 394.56 305.60 403.26 C 306.77 411.95 306.68 423.44 310.02 431.98 C 313.37 440.51 313.00 452.04 317.22 459.78 C 321.45 467.52 320.05 479.88 326.00 486.00
+C 329.72 483.87 332.46 484.96 337.00 485.00
+C 346.74 485.08 359.31 482.79 369.00 481.00
+C 371.05 480.62 373.20 480.93 375.00 481.00
+C 415.34 476.03 455.70 471.00 497.00 471.00
+C 499.42 470.77 502.91 470.00 506.00 470.00
+C 525.67 470.00 546.33 463.21 566.00 465.00
+C 565.36 464.52 563.71 465.38 563.00 465.00
+C 564.81 462.65 568.20 464.51 570.00 466.00
+C 582.84 464.60 594.58 463.00 607.00 463.00
+C 609.42 462.77 612.91 462.00 616.00 462.00
+C 619.23 462.00 623.50 461.04 626.00 461.00
+C 624.38 460.73 622.63 461.20 621.00 461.00
+C 625.16 458.45 630.41 461.36 635.00 460.00
+C 644.18 460.40 652.13 459.97 661.00 459.00
+C 663.58 458.72 666.84 457.81 670.00 458.00
+C 674.48 458.27 678.30 458.26 683.00 458.00
+C 691.28 457.55 699.71 458.00 708.00 458.00
+C 713.12 458.00 718.55 457.61 723.00 457.00
+C 718.83 457.00 713.34 457.82 710.00 456.00
+C 714.80 455.67 722.31 455.34 727.00 457.00
+C 735.35 458.02 744.37 457.16 753.00 458.00
+C 754.64 457.56 755.16 456.29 757.00 456.00
+C 764.09 454.88 773.23 456.00 781.00 456.00
+C 785.08 456.00 789.66 456.68 793.00 457.00
+C 805.12 456.43 816.40 457.96 827.00 455.00
+C 820.51 446.94 813.73 439.51 808.00 434.00
+C 802.68 428.89 797.95 423.35 793.00 418.00
+C 782.00 408.96 768.99 396.16 760.00 385.00
+C 757.71 382.75 754.39 379.16 752.00 377.00
+C 746.68 372.20 738.56 364.56 732.00 358.00
+C 724.51 353.39 717.05 343.12 710.92 338.13 C 704.79 333.14 698.87 327.35 692.00 320.00
+C 690.87 319.20 687.82 317.31 686.00 315.00
+C 683.00 311.20 679.06 308.06 675.00 304.00
+C 673.72 303.17 671.76 301.17 671.00 300.00
+C 635.41 264.40 596.04 227.24 553.00 203.00
+C 551.06 201.91 548.68 199.83 547.00 199.00
+C 543.96 198.10 540.89 197.31 538.00 196.00
+C 535.88 195.04 534.17 193.91 532.00 193.00
+C 522.48 189.03 512.05 186.04 502.00 184.00
+C 498.22 183.23 493.81 181.79 490.00 181.00
+C 482.32 179.41 475.09 179.31 467.00 179.00
+C 458.01 178.66 449.15 177.75 440.00 178.00
+C 433.72 179.53 426.10 180.65 419.00 181.00
+M 304.00 374.00 
+C 305.21 380.27 301.10 377.91 304.00 374.00 Z"/>
+</g>
+<g fill="#3CC06B" fill-opacity="0.30" stroke="None">
+<path d="
+M 411.00 183.00 
+C 414.40 182.37 416.32 181.74 419.00 181.00
+C 415.79 181.16 413.61 181.82 411.00 183.00 Z"/>
+</g>
+<g fill="#3BAF76" fill-opacity="0.27" stroke="None">
+<path d="
+M 490.00 181.00 
+C 493.81 181.79 498.22 183.23 502.00 184.00
+C 497.06 181.82 495.17 181.08 490.00 181.00 Z"/>
+</g>
+<g fill="#31B27B" fill-opacity="0.20" stroke="None">
+<path d="
+M 395.00 188.00 
+C 397.67 187.13 400.35 186.76 403.00 186.00
+C 399.09 186.43 398.87 185.87 395.00 188.00 Z"/>
+</g>
+<g fill="#4ADEA8" fill-opacity="0.21" stroke="None">
+<path d="
+M 615.00 191.00 
+C 613.23 189.56 610.71 188.31 609.00 187.00
+C 610.82 188.89 613.86 190.35 615.00 191.00 Z"/>
+</g>
+<g fill="#46CD83" fill-opacity="0.43" stroke="None">
+<path d="
+M 381.00 193.00 
+C 381.27 192.75 382.58 193.18 383.00 193.00
+C 381.85 193.22 381.18 192.87 381.00 193.00 Z"/>
+</g>
+<g fill="#43B374" fill-opacity="0.26" stroke="None">
+<path d="
+M 532.00 193.00 
+C 534.17 193.91 535.88 195.04 538.00 196.00
+C 537.10 195.36 537.22 193.09 535.23 192.78 C 533.23 192.48 532.90 193.17 532.00 193.00 Z"/>
+</g>
+<g fill="#55B086" fill-opacity="0.25" stroke="None">
+<path d="
+M 553.00 203.00 
+C 550.74 201.09 550.64 200.07 547.00 199.00
+C 548.68 199.83 551.06 201.91 553.00 203.00 Z"/>
+</g>
+<g fill="#011E16" fill-opacity="0.01" stroke="None">
+<path d="
+M 332.00 237.00 
+C 332.03 236.97 335.01 234.99 336.00 233.00
+C 335.73 233.36 333.29 234.69 332.00 237.00 Z"/>
+</g>
+<g fill="#46C475" fill-opacity="0.29" stroke="None">
+<path d="
+M 701.00 267.00 
+C 697.94 264.41 694.08 260.63 691.00 258.00
+C 693.87 261.49 696.90 264.97 701.00 267.00 Z"/>
+</g>
+<g fill="#39D5A3" fill-opacity="0.22" stroke="None">
+<path d="
+M 738.00 301.00 
+C 738.00 301.00 738.20 300.40 738.00 300.00
+C 734.36 299.40 730.62 293.57 728.00 291.00
+C 725.38 288.43 722.86 286.45 720.00 284.00
+C 723.96 288.63 731.38 300.29 738.00 301.00 Z"/>
+</g>
+<g fill="#1D322C" fill-opacity="0.02" stroke="None">
+<path d="
+M 728.00 291.00 
+C 730.62 293.57 734.36 299.40 738.00 300.00
+C 736.06 296.03 730.17 292.53 728.00 291.00 Z"/>
+</g>
+<g fill="#0E2B18" fill-opacity="0.01" stroke="None">
+<path d="
+M 675.00 304.00 
+C 673.78 302.78 672.26 301.26 671.00 300.00
+C 671.76 301.17 673.72 303.17 675.00 304.00 Z"/>
+</g>
+<g fill="#021A14" fill-opacity="0.01" stroke="None">
+<path d="
+M 692.00 320.00 
+C 690.16 318.03 687.74 316.55 686.00 315.00
+C 687.82 317.31 690.87 319.20 692.00 320.00 Z"/>
+</g>
+<g fill="#1B2725" fill-opacity="0.01" stroke="None">
+<path d="
+M 777.00 339.00 
+C 777.33 339.36 777.71 340.52 778.00 341.00
+C 779.89 343.07 782.47 343.43 784.00 346.00
+C 784.25 342.88 778.65 340.17 777.00 339.00 Z"/>
+</g>
+<g fill="#30D485" fill-opacity="0.45" stroke="None">
+<path d="
+M 256.00 343.00 
+C 256.03 343.36 256.93 345.03 257.00 346.00
+C 256.81 346.59 260.90 345.18 258.92 342.09 C 256.94 338.99 257.24 341.15 256.00 343.00 Z"/>
+</g>
+<g fill="#42BF81" fill-opacity="0.33" stroke="None">
+<path d="
+M 834.00 397.00 
+C 829.35 391.02 822.30 382.88 815.00 377.00
+C 811.73 374.37 808.46 369.87 807.00 368.00
+C 800.59 361.95 794.19 354.93 788.00 349.00
+C 787.18 348.21 785.91 347.61 785.00 347.00
+C 784.69 346.79 784.19 346.32 784.00 346.00
+C 782.47 343.43 779.89 343.07 778.00 341.00
+C 784.57 351.80 797.27 359.71 805.75 369.25 C 814.24 378.79 824.31 388.72 834.00 397.00 Z"/>
+</g>
+<g fill="#3CB677" fill-opacity="0.10" stroke="None">
+<path d="
+M 254.00 347.00 
+C 253.95 346.33 255.84 349.86 256.00 351.00
+C 256.25 349.62 257.14 348.09 257.00 346.00
+C 256.93 345.03 256.03 343.36 256.00 343.00
+C 255.13 344.30 254.65 345.66 254.00 347.00 Z"/>
+</g>
+<g fill="#247122" fill-opacity="0.02" stroke="None">
+<path d="
+M 785.00 347.00 
+C 785.91 347.61 787.18 348.21 788.00 349.00
+C 786.49 347.31 786.61 346.85 785.00 347.00 Z"/>
+</g>
+<g fill="#000000" fill-opacity="0.00" stroke="None">
+<path d="
+M 136.00 618.00 
+C 136.01 616.21 138.06 612.53 137.00 610.00
+C 138.54 612.28 138.72 617.79 137.00 620.00
+C 143.93 660.03 156.69 698.69 186.00 728.00
+C 188.75 730.75 190.95 733.02 193.00 736.00
+C 193.98 737.12 194.80 738.00 196.00 739.00
+C 198.06 740.13 202.76 743.97 204.00 745.00
+C 210.38 748.36 217.04 753.12 224.00 758.00
+C 226.33 759.03 228.90 759.93 231.00 761.00
+C 249.58 766.55 265.02 773.66 286.00 775.00 C 306.98 776.34 331.70 777.31 352.00 779.00
+C 353.98 778.82 355.56 777.90 358.00 778.00
+C 368.94 778.45 381.34 780.73 392.00 781.00
+C 397.39 780.55 403.58 779.84 409.00 781.00
+C 412.52 781.76 416.78 782.00 421.00 782.00
+C 428.55 782.00 436.48 781.29 444.00 782.00
+C 448.15 782.39 452.51 783.00 457.00 783.00
+C 472.06 783.00 486.37 784.10 501.00 785.00
+C 502.35 784.14 500.75 782.83 500.00 782.00
+C 473.47 763.51 450.95 746.72 427.00 725.00
+C 425.13 723.93 417.59 718.06 415.75 715.25 C 413.91 712.43 404.26 705.66 406.00 704.00
+C 403.43 700.32 400.18 697.08 397.00 694.00
+C 394.58 692.43 391.36 688.52 390.00 686.00
+C 376.24 669.41 366.62 655.76 356.30 640.70 C 345.98 625.64 333.38 605.88 325.00 590.00
+C 324.11 589.11 322.92 589.54 322.00 588.00
+C 318.93 582.86 317.48 576.21 314.00 571.00
+C 313.62 570.65 312.78 571.38 312.00 569.00
+C 309.44 561.19 305.22 551.90 301.31 543.69 C 297.39 535.49 294.12 529.05 290.32 519.68 C 286.52 510.31 284.37 505.15 281.98 497.02 C 279.58 488.90 274.97 478.27 272.98 469.02 C 270.98 459.78 265.94 448.78 264.35 439.69 C 262.76 430.61 260.99 420.49 259.99 411.01 C 259.00 401.52 255.82 388.48 256.65 380.70 C 257.48 372.91 254.72 358.05 256.00 351.00
+C 255.84 349.86 253.95 346.33 254.00 347.00
+C 245.08 365.54 236.62 382.20 226.77 399.77 C 216.92 417.34 211.63 431.01 201.92 447.92 C 192.21 464.83 183.96 484.53 175.70 501.71 C 167.45 518.88 155.50 535.93 149.32 554.32 C 143.15 572.71 131.54 597.06 136.00 618.00 Z"/>
+</g>
+<g fill="#5CC38A" fill-opacity="0.39" stroke="None">
+<path d="
+M 732.00 358.00 
+C 738.56 364.56 746.68 372.20 752.00 377.00
+C 745.71 370.71 738.42 361.95 732.00 358.00 Z"/>
+</g>
+<g fill="#5CA993" fill-opacity="0.02" stroke="None">
+<path d="
+M 815.00 377.00 
+C 812.02 374.19 809.92 370.75 807.00 368.00
+C 808.46 369.87 811.73 374.37 815.00 377.00 Z"/>
+</g>
+<g fill="#2C5144" fill-opacity="0.01" stroke="None">
+<path d="
+M 304.00 374.00 
+C 301.10 377.91 305.21 380.27 304.00 374.00 Z"/>
+</g>
+<g fill="#58CB88" fill-opacity="0.26" stroke="None">
+<path d="
+M 760.00 385.00 
+C 757.64 382.07 754.67 379.67 752.00 377.00
+C 754.39 379.16 757.71 382.75 760.00 385.00 Z"/>
+</g>
+<g fill="#55C683" fill-opacity="0.29" stroke="None">
+<path d="
+M 808.00 434.00 
+C 804.79 429.61 798.58 422.59 793.00 418.00
+C 797.95 423.35 802.68 428.89 808.00 434.00 Z"/>
+</g>
+<g fill="#007264" fill-opacity="0.01" stroke="None">
+<path d="
+M 723.00 457.00 
+C 724.30 457.00 725.71 456.84 727.00 457.00
+C 722.31 455.34 714.80 455.67 710.00 456.00
+C 713.34 457.82 718.83 457.00 723.00 457.00 Z"/>
+</g>
+<g fill="#36BD6E" fill-opacity="0.45" stroke="None">
+<path d="
+M 753.00 458.00 
+C 755.02 460.22 759.16 458.41 762.00 459.00
+C 761.08 459.18 757.44 456.00 757.00 456.00
+C 755.16 456.29 754.64 457.56 753.00 458.00 Z"/>
+</g>
+<g fill="#2C6E56" fill-opacity="0.02" stroke="None">
+<path d="
+M 793.00 457.00 
+C 789.66 456.68 785.08 456.00 781.00 456.00
+C 784.34 456.32 788.92 457.00 793.00 457.00 Z"/>
+</g>
+<g fill="#2C826D" fill-opacity="0.05" stroke="None">
+<path d="
+M 661.00 459.00 
+C 662.30 459.06 664.92 459.46 667.00 460.00 C 669.07 460.54 671.48 457.78 670.00 458.00
+C 666.84 457.81 663.58 458.72 661.00 459.00 Z"/>
+</g>
+<g fill="#3B9584" fill-opacity="0.13" stroke="None">
+<path d="
+M 708.00 458.00 
+C 699.71 458.00 691.28 457.55 683.00 458.00
+C 690.70 458.33 700.18 458.76 708.00 458.00 Z"/>
+</g>
+<g fill="#0F5746" fill-opacity="0.02" stroke="None">
+<path d="
+M 626.00 461.00 
+C 630.22 461.69 631.97 460.42 635.00 460.00
+C 630.41 461.36 625.16 458.45 621.00 461.00
+C 622.63 461.20 624.38 460.73 626.00 461.00 Z"/>
+</g>
+<g fill="#4D8F85" fill-opacity="0.09" stroke="None">
+<path d="
+M 607.00 463.00 
+C 610.09 463.00 613.58 462.23 616.00 462.00
+C 612.91 462.00 609.42 462.77 607.00 463.00 Z"/>
+</g>
+<g fill="#27975B" fill-opacity="0.26" stroke="None">
+<path d="
+M 566.00 465.00 
+C 568.27 466.69 567.27 466.30 570.00 466.00
+C 568.20 464.51 564.81 462.65 563.00 465.00
+C 563.71 465.38 565.36 464.52 566.00 465.00 Z"/>
+</g>
+<g fill="#4BA08C" fill-opacity="0.13" stroke="None">
+<path d="
+M 497.00 471.00 
+C 500.09 471.00 503.58 470.23 506.00 470.00
+C 502.91 470.00 499.42 470.77 497.00 471.00 Z"/>
+</g>
+<g fill="#319E6D" fill-opacity="0.06" stroke="None">
+<path d="
+M 369.00 481.00 
+C 370.35 480.98 373.38 481.20 375.00 481.00
+C 373.20 480.93 371.05 480.62 369.00 481.00 Z"/>
+</g>
+<g fill="#36B37B" fill-opacity="0.38" stroke="None">
+<path d="
+M 326.00 486.00 
+C 329.67 489.78 333.64 486.26 337.00 485.00
+C 332.46 484.96 329.72 483.87 326.00 486.00 Z"/>
+</g>
+<g fill="#407858" fill-opacity="0.13" stroke="None">
+<path d="
+M 894.00 501.00 
+C 894.00 497.04 894.31 492.94 894.00 489.00
+C 893.94 492.36 893.66 497.46 894.00 501.00 Z"/>
+</g>
+<g fill="#45C97E" fill-opacity="0.62" stroke="None">
+<path d="
+M 846.00 495.00 
+C 846.45 494.85 847.65 494.77 848.00 495.00
+C 849.91 496.24 849.20 502.77 849.00 505.00
+C 851.28 501.99 849.37 496.83 850.00 493.00
+C 847.95 492.38 846.54 494.84 846.00 495.00 Z"/>
+</g>
+<g fill="#000000" fill-opacity="0.00" stroke="None">
+<path d="
+M 794.00 502.00 
+C 787.98 502.58 780.71 503.00 774.00 503.00
+C 770.67 503.00 767.33 503.00 764.00 503.00
+C 752.33 503.00 740.67 503.00 729.00 503.00
+C 722.07 503.00 715.72 503.74 709.00 504.00
+C 694.45 504.56 680.67 505.37 667.00 506.00 C 653.33 506.63 642.89 508.67 628.00 508.00 C 613.11 507.33 609.11 516.46 604.00 529.00
+C 603.61 529.96 603.52 531.00 603.00 532.00
+C 585.19 566.52 567.16 601.84 542.00 627.00
+C 539.97 630.14 535.00 635.06 532.00 637.00
+C 528.82 640.18 525.28 643.84 522.00 647.00
+C 520.81 648.66 517.31 653.07 514.00 655.00
+C 511.14 656.67 508.54 658.32 505.00 660.00
+C 503.96 660.84 502.48 662.73 502.00 663.00
+C 497.50 665.56 494.97 669.03 491.00 672.00
+C 489.58 673.06 488.63 672.82 488.00 673.00
+C 481.64 676.51 474.98 681.96 469.00 685.00
+C 467.96 685.89 468.18 686.19 466.77 687.77 C 465.35 689.34 463.29 687.21 464.00 687.00
+C 462.07 687.47 461.31 690.45 459.00 690.00
+C 475.04 707.17 492.90 722.90 512.00 736.00
+C 514.30 737.58 515.83 739.38 518.00 741.00
+C 530.10 746.72 539.41 753.81 549.00 759.00
+C 550.20 759.65 550.94 760.24 552.00 761.00
+C 573.97 770.21 594.63 778.90 617.00 785.00
+C 618.67 785.25 625.36 785.21 627.00 785.00
+C 647.04 780.34 668.49 767.77 683.00 755.00
+C 685.74 752.59 688.21 750.48 691.00 748.00
+C 715.27 726.43 736.59 705.35 754.30 680.30 C 772.01 655.25 795.19 628.46 808.68 599.68 C 822.17 570.90 846.20 538.23 848.00 505.00
+C 848.13 502.58 848.97 497.17 848.00 495.00
+C 847.65 494.77 846.45 494.85 846.00 495.00
+C 830.18 500.10 811.65 500.29 794.00 502.00 Z"/>
+</g>
+<g fill="#377B57" fill-opacity="0.06" stroke="None">
+<path d="
+M 848.00 505.00 
+C 848.00 505.00 848.74 505.25 849.00 505.00
+C 849.20 502.77 849.91 496.24 848.00 495.00
+C 848.97 497.17 848.13 502.58 848.00 505.00 Z"/>
+</g>
+<g fill="#2BAA68" fill-opacity="0.51" stroke="None">
+<path d="
+M 709.00 504.00 
+C 715.72 503.74 722.07 503.00 729.00 503.00
+C 728.81 502.92 729.14 501.05 729.00 501.00
+C 721.20 500.84 714.85 502.77 709.00 504.00 Z"/>
+</g>
+<g fill="#3AA671" fill-opacity="0.27" stroke="None">
+<path d="
+M 729.00 503.00 
+C 740.67 503.00 752.33 503.00 764.00 503.00
+C 767.14 502.70 770.92 502.70 774.00 503.00
+C 780.71 503.00 787.98 502.58 794.00 502.00
+C 773.29 500.00 750.53 501.43 729.00 501.00
+C 729.14 501.05 728.81 502.92 729.00 503.00 Z"/>
+</g>
+<g fill="#55AA55" fill-opacity="0.01" stroke="None">
+<path d="
+M 764.00 503.00 
+C 767.33 503.00 770.67 503.00 774.00 503.00
+C 770.92 502.70 767.14 502.70 764.00 503.00 Z"/>
+</g>
+<g fill="#35BC78" fill-opacity="0.21" stroke="None">
+<path d="
+M 557.00 512.00 
+C 558.61 512.15 560.30 510.57 561.00 513.00
+C 561.64 511.10 564.42 510.93 560.00 510.00 C 555.59 509.07 557.21 511.95 557.00 512.00 Z"/>
+</g>
+<g fill="#000000" fill-opacity="0.00" stroke="None">
+<path d="
+M 504.00 516.00 
+C 501.59 516.49 499.71 518.37 496.00 518.00
+C 494.20 518.13 493.55 517.22 492.00 517.00
+C 481.68 518.73 469.44 521.11 458.00 520.00
+C 458.05 519.99 454.75 523.09 453.00 522.00 C 451.25 520.90 450.20 520.99 449.00 521.00
+C 436.05 521.13 424.40 524.00 411.00 524.00
+C 408.69 524.22 404.92 524.77 402.00 525.00
+C 396.78 525.41 391.53 526.00 386.00 526.00
+C 372.00 526.00 358.00 526.00 344.00 526.00
+C 343.54 528.33 345.25 530.34 346.00 532.00
+C 345.80 531.57 345.71 532.79 346.00 534.00
+C 347.17 535.96 348.31 537.61 349.00 540.00
+C 349.36 540.56 349.92 538.46 350.74 539.40 C 351.56 540.34 349.59 541.22 350.00 542.00
+C 354.40 545.51 359.55 558.79 363.00 567.00
+C 362.83 566.78 365.96 565.59 365.75 567.27 C 365.54 568.94 365.43 569.34 366.00 571.00
+C 383.41 602.51 404.43 629.26 424.00 656.00
+C 447.21 649.21 459.38 632.45 479.00 623.00
+C 481.73 620.61 485.50 617.90 489.00 615.00
+C 490.77 612.80 493.26 611.67 495.00 610.00
+C 505.22 594.98 523.27 583.12 532.70 565.70 C 542.12 548.27 554.63 531.78 561.00 513.00
+C 560.30 510.57 558.61 512.15 557.00 512.00
+C 548.46 511.19 541.22 513.90 532.67 514.33 C 524.12 514.76 512.84 514.75 504.00 516.00 Z"/>
+</g>
+<g fill="#409F5F" fill-opacity="0.08" stroke="None">
+<path d="
+M 492.00 517.00 
+C 493.55 517.22 494.20 518.13 496.00 518.00
+C 496.44 517.97 499.04 517.18 500.00 517.00
+C 497.98 517.07 494.37 516.60 492.00 517.00 Z"/>
+</g>
+<g fill="#1E4C37" fill-opacity="0.01" stroke="None">
+<path d="
+M 500.00 517.00 
+C 499.04 517.18 496.44 517.97 496.00 518.00
+C 499.71 518.37 501.59 516.49 504.00 516.00
+C 502.50 516.21 501.44 516.74 500.00 517.00 Z"/>
+</g>
+<g fill="#219564" fill-opacity="0.24" stroke="None">
+<path d="
+M 449.00 521.00 
+C 450.20 520.99 451.25 520.90 453.00 522.00 C 454.75 523.09 458.05 519.99 458.00 520.00
+C 454.18 519.63 452.71 519.86 449.00 521.00 Z"/>
+</g>
+<g fill="#39AA7C" fill-opacity="0.27" stroke="None">
+<path d="
+M 386.00 526.00 
+C 391.53 526.00 396.78 525.41 402.00 525.00
+C 402.13 524.96 402.00 524.00 402.00 524.00
+C 396.14 524.00 389.77 525.20 386.00 526.00 Z"/>
+</g>
+<g fill="#409F6A" fill-opacity="0.10" stroke="None">
+<path d="
+M 402.00 525.00 
+C 404.92 524.77 408.69 524.22 411.00 524.00
+C 408.00 524.00 405.00 524.00 402.00 524.00
+C 402.00 524.00 402.13 524.96 402.00 525.00 Z"/>
+</g>
+<g fill="#4BE087" fill-opacity="0.34" stroke="None">
+<path d="
+M 603.00 532.00 
+C 603.52 531.00 603.61 529.96 604.00 529.00
+C 602.97 530.69 603.30 530.89 603.00 532.00 Z"/>
+</g>
+<g fill="#1D9468" fill-opacity="0.26" stroke="None">
+<path d="
+M 346.00 532.00 
+C 346.31 533.95 345.86 533.76 346.00 534.00
+C 345.71 532.79 345.80 531.57 346.00 532.00 Z"/>
+</g>
+<g fill="#27A170" fill-opacity="0.27" stroke="None">
+<path d="
+M 349.00 540.00 
+C 349.36 541.25 349.38 541.50 350.00 542.00
+C 349.59 541.22 351.56 540.34 350.74 539.40 C 349.92 538.46 349.36 540.56 349.00 540.00 Z"/>
+</g>
+<g fill="#39B07B" fill-opacity="0.15" stroke="None">
+<path d="
+M 363.00 567.00 
+C 363.97 569.31 364.93 569.59 366.00 571.00
+C 365.43 569.34 365.54 568.94 365.75 567.27 C 365.96 565.59 362.83 566.78 363.00 567.00 Z"/>
+</g>
+<g fill="#062A06" fill-opacity="0.01" stroke="None">
+<path d="
+M 314.00 571.00 
+C 313.54 570.31 312.14 569.21 312.00 569.00
+C 312.78 571.38 313.62 570.65 314.00 571.00 Z"/>
+</g>
+<g fill="#07352E" fill-opacity="0.01" stroke="None">
+<path d="
+M 322.00 588.00 
+C 322.92 589.54 324.11 589.11 325.00 590.00
+C 323.98 588.06 322.05 588.07 322.00 588.00 Z"/>
+</g>
+<g fill="#3B5646" fill-opacity="0.02" stroke="None">
+<path d="
+M 136.00 618.00 
+C 136.17 618.81 136.87 619.23 137.00 620.00
+C 138.72 617.79 138.54 612.28 137.00 610.00
+C 138.06 612.53 136.01 616.21 136.00 618.00 Z"/>
+</g>
+<g fill="#39C67A" fill-opacity="0.43" stroke="None">
+<path d="
+M 489.00 615.00 
+C 488.60 615.50 488.38 616.59 488.00 617.00
+C 490.73 614.67 493.87 611.66 495.00 610.00
+C 493.26 611.67 490.77 612.80 489.00 615.00 Z"/>
+</g>
+<g fill="#38C773" fill-opacity="0.19" stroke="None">
+<path d="
+M 479.00 623.00 
+C 481.27 621.91 484.89 619.65 488.00 617.00
+C 488.38 616.59 488.60 615.50 489.00 615.00
+C 485.50 617.90 481.73 620.61 479.00 623.00 Z"/>
+</g>
+<g fill="#02230B" fill-opacity="0.01" stroke="None">
+<path d="
+M 532.00 637.00 
+C 535.00 635.06 539.97 630.14 542.00 627.00
+C 538.79 630.21 535.25 633.75 532.00 637.00 Z"/>
+</g>
+<g fill="#011F12" fill-opacity="0.01" stroke="None">
+<path d="
+M 514.00 655.00 
+C 517.31 653.07 520.81 648.66 522.00 647.00
+C 519.67 649.24 516.27 653.16 514.00 655.00 Z"/>
+</g>
+<g fill="#2B9757" fill-opacity="0.17" stroke="None">
+<path d="
+M 502.00 663.00 
+C 502.48 662.73 503.96 660.84 505.00 660.00
+C 503.91 660.52 503.46 661.63 502.00 663.00 Z"/>
+</g>
+<g fill="#002A14" fill-opacity="0.01" stroke="None">
+<path d="
+M 488.00 673.00 
+C 488.63 672.82 489.58 673.06 491.00 672.00
+C 489.89 672.48 489.46 672.19 488.00 673.00 Z"/>
+</g>
+<g fill="#2ECD71" fill-opacity="0.20" stroke="None">
+<path d="
+M 810.00 680.00 
+C 810.35 679.54 812.71 677.32 814.00 675.00
+C 813.93 675.08 811.04 678.05 810.00 680.00 Z"/>
+</g>
+<g fill="#062A18" fill-opacity="0.01" stroke="None">
+<path d="
+M 464.00 687.00 
+C 463.29 687.21 465.35 689.34 466.77 687.77 C 468.18 686.19 467.96 685.89 469.00 685.00
+C 467.44 685.79 465.62 686.05 464.00 687.00 Z"/>
+</g>
+<g fill="#0E2119" fill-opacity="0.01" stroke="None">
+<path d="
+M 397.00 694.00 
+C 394.38 691.46 392.75 689.31 390.00 686.00
+C 391.36 688.52 394.58 692.43 397.00 694.00 Z"/>
+</g>
+<g fill="#001810" fill-opacity="0.01" stroke="None">
+<path d="
+M 427.00 725.00 
+C 424.55 722.78 421.79 719.13 420.00 717.00
+C 415.62 712.87 410.65 709.52 407.00 704.00
+C 407.00 704.00 406.16 704.23 406.00 704.00
+C 404.26 705.66 413.91 712.43 415.75 715.25 C 417.59 718.06 425.13 723.93 427.00 725.00 Z"/>
+</g>
+<g fill="#58CE7F" fill-opacity="0.27" stroke="None">
+<path d="
+M 420.00 717.00 
+C 416.67 713.02 411.81 706.35 407.00 704.00
+C 410.65 709.52 415.62 712.87 420.00 717.00 Z"/>
+</g>
+<g fill="#00321B" fill-opacity="0.01" stroke="None">
+<path d="
+M 790.00 709.00 
+C 790.55 708.49 793.38 704.91 794.00 704.00
+C 792.64 705.40 791.28 707.26 790.00 709.00 Z"/>
+</g>
+<g fill="#003120" fill-opacity="0.01" stroke="None">
+<path d="
+M 782.00 720.00 
+C 784.22 717.90 785.61 716.63 787.00 714.00
+C 785.81 715.52 783.41 718.11 782.00 720.00 Z"/>
+</g>
+<g fill="#1D482A" fill-opacity="0.02" stroke="None">
+<path d="
+M 193.00 736.00 
+C 190.95 733.02 188.75 730.75 186.00 728.00
+C 188.24 730.72 190.61 733.28 193.00 736.00 Z"/>
+</g>
+<g fill="#40D298" fill-opacity="0.27" stroke="None">
+<path d="
+M 518.00 741.00 
+C 515.83 739.38 514.30 737.58 512.00 736.00
+C 513.28 737.44 514.62 739.40 518.00 741.00 Z"/>
+</g>
+<g fill="#0A3121" fill-opacity="0.02" stroke="None">
+<path d="
+M 196.00 739.00 
+C 198.47 741.05 201.31 743.59 204.00 745.00
+C 202.76 743.97 198.06 740.13 196.00 739.00 Z"/>
+</g>
+<g fill="#41B788" fill-opacity="0.31" stroke="None">
+<path d="
+M 683.00 755.00 
+C 686.50 753.30 688.99 751.05 691.00 748.00
+C 688.21 750.48 685.74 752.59 683.00 755.00 Z"/>
+</g>
+<g fill="#072618" fill-opacity="0.01" stroke="None">
+<path d="
+M 735.00 771.00 
+C 740.70 767.58 747.27 759.21 750.00 755.00
+C 745.44 759.89 739.31 767.46 735.00 771.00 Z"/>
+</g>
+<g fill="#41C0A6" fill-opacity="0.17" stroke="None">
+<path d="
+M 231.00 761.00 
+C 228.90 759.93 226.33 759.03 224.00 758.00
+C 226.50 759.75 228.39 760.22 231.00 761.00 Z"/>
+</g>
+<g fill="#29D1BD" fill-opacity="0.15" stroke="None">
+<path d="
+M 552.00 761.00 
+C 550.94 760.24 550.20 759.65 549.00 759.00
+C 550.62 760.46 549.60 759.99 552.00 761.00 Z"/>
+</g>
+<g fill="#36CC6A" fill-opacity="0.19" stroke="None">
+<path d="
+M 719.00 784.00 
+C 721.92 781.53 724.65 778.20 727.00 776.00
+C 724.58 777.53 720.57 782.13 719.00 784.00 Z"/>
+</g>
+<g fill="#2FBE92" fill-opacity="0.05" stroke="None">
+<path d="
+M 352.00 779.00 
+C 354.43 779.20 356.09 778.24 358.00 778.00
+C 355.56 777.90 353.98 778.82 352.00 779.00 Z"/>
+</g>
+<g fill="#41B07B" fill-opacity="0.21" stroke="None">
+<path d="
+M 181.00 783.00 
+C 178.87 780.79 177.61 780.36 175.00 779.00
+C 177.18 780.87 179.60 782.13 181.00 783.00 Z"/>
+</g>
+<g fill="#00534F" fill-opacity="0.02" stroke="None">
+<path d="
+M 392.00 781.00 
+C 394.90 781.07 398.14 780.53 401.00 781.00
+C 402.22 781.20 403.67 781.74 405.00 782.00
+C 405.80 781.94 407.44 780.92 409.00 781.00
+C 403.58 779.84 397.39 780.55 392.00 781.00 Z"/>
+</g>
+<g fill="#23C988" fill-opacity="0.57" stroke="None">
+<path d="
+M 405.00 782.00 
+C 403.67 781.74 402.22 781.20 401.00 781.00
+C 401.03 784.38 407.41 783.33 409.00 782.00
+C 407.70 781.81 406.28 782.25 405.00 782.00 Z"/>
+</g>
+<g fill="#40C987" fill-opacity="0.37" stroke="None">
+<path d="
+M 500.00 782.00 
+C 500.75 782.83 502.35 784.14 501.00 785.00
+C 501.68 786.65 505.26 786.39 506.00 785.00
+C 504.09 784.71 500.92 782.64 500.00 782.00 Z"/>
+</g>
+<g fill="#3A8278" fill-opacity="0.16" stroke="None">
+<path d="
+M 442.00 783.00 
+C 442.53 782.93 443.99 782.00 444.00 782.00
+C 436.48 781.29 428.55 782.00 421.00 782.00
+C 427.10 782.59 435.13 783.85 442.00 783.00 Z"/>
+</g>
+<g fill="#47D5A5" fill-opacity="0.58" stroke="None">
+<path d="
+M 442.00 783.00 
+C 446.65 783.45 452.28 783.46 457.00 783.00
+C 452.51 783.00 448.15 782.39 444.00 782.00
+C 443.99 782.00 442.53 782.93 442.00 783.00 Z"/>
+</g>
+<g fill="#34AB71" fill-opacity="0.09" stroke="None">
+<path d="
+M 617.00 785.00 
+C 620.49 785.95 623.48 785.82 627.00 785.00
+C 625.36 785.21 618.67 785.25 617.00 785.00 Z"/>
+</g>
+<g fill="#46A86F" fill-opacity="0.20" stroke="None">
+<path d="
+M 195.00 793.00 
+C 196.54 794.00 197.20 794.23 199.00 795.00
+C 199.78 795.86 200.85 794.51 198.75 793.26 C 196.64 792.01 196.52 793.46 195.00 793.00 Z"/>
+</g>
+<g fill="#3DDF70" fill-opacity="0.38" stroke="None">
+<path d="
+M 689.00 805.00 
+C 689.24 804.84 690.81 804.10 691.00 804.00
+C 690.35 804.25 689.07 804.93 689.00 805.00 Z"/>
+</g>
+<g fill="#50B37D" fill-opacity="0.24" stroke="None">
+<path d="
+M 242.00 813.00 
+C 243.50 813.51 245.09 813.62 247.00 814.00
+C 244.91 813.10 243.71 813.31 242.00 813.00 Z"/>
+</g>
+<g fill="#3DA470" fill-opacity="0.13" stroke="None">
+<path d="
+M 428.00 829.00 
+C 430.61 829.25 433.37 829.00 436.00 829.00
+C 435.45 828.88 434.31 826.79 432.01 827.01 C 429.71 827.23 429.17 828.87 428.00 829.00 Z"/>
+</g>
+<g fill="#2EAD79" fill-opacity="0.18" stroke="None">
+<path d="
+M 456.00 829.00 
+C 459.25 829.22 462.46 829.02 465.00 829.00
+C 461.52 828.48 459.03 828.71 456.00 829.00 Z"/>
+</g>
+<g fill="#3FC47E" fill-opacity="0.34" stroke="None">
+<path d="
+M 493.00 830.00 
+C 498.37 830.11 504.27 831.00 510.00 831.00
+C 514.71 830.54 520.60 830.00 526.00 830.00
+C 535.47 830.00 546.36 829.10 555.00 831.00
+C 556.00 831.00 557.00 831.00 558.00 831.00
+C 562.62 829.99 569.45 829.07 574.00 831.00
+C 574.50 831.00 575.50 831.00 576.00 831.00
+C 568.96 829.52 558.31 828.37 549.00 829.00 C 539.69 829.63 529.28 828.72 520.00 829.00 C 510.72 829.28 501.51 828.48 493.00 830.00 Z"/>
+</g>
+<g fill="#808080" fill-opacity="0.01" stroke="None">
+<path d="
+M 510.00 831.00 
+C 515.33 831.00 520.67 831.00 526.00 831.00
+C 525.96 831.00 526.00 830.00 526.00 830.00
+C 520.60 830.00 514.71 830.54 510.00 831.00 Z"/>
+</g>
+<g fill="#00FF00" fill-opacity="0.00" stroke="None">
+<path d="
+M 526.00 831.00 
+C 535.67 831.00 545.33 831.00 555.00 831.00
+C 546.36 829.10 535.47 830.00 526.00 830.00
+C 526.00 830.00 525.96 831.00 526.00 831.00 Z"/>
+</g>
+<g fill="#4A8080" fill-opacity="0.01" stroke="None">
+<path d="
+M 558.00 831.00 
+C 563.33 831.00 568.67 831.00 574.00 831.00
+C 569.45 829.07 562.62 829.99 558.00 831.00 Z"/>
+</g>
+</symbol>
+</svg>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="land-logo">
+    <svg viewBox="0 0 1000 1000"><use href="#SL"/></svg>
+    <span class="land-logo-name">Surge<em>.ai</em></span>
+  </div>
+  <div class="land-badge">&#9889; Completely free &middot; No credit card needed</div>
+  <h1 class="land-h1">The AI that does <em>everything</em> you need</h1>
+  <p class="land-sub">Chat, code, generate images, analyse data, process files, transcribe audio and have full voice conversations &mdash; all in one place. Powered by the best open-source AI models on Hugging Face.</p>
+  <div class="land-cta">
+    <button class="land-btn-primary" id="land-signup-btn">Create account &mdash; it&apos;s free</button>
+    <button class="land-btn-secondary" id="land-signin-btn">Already have an account? Sign in</button>
+  </div>
+  <div class="land-caps">
+    <div class="cap-card"><div class="cap-ico">&#128172;</div><div class="cap-name">Smart chat</div><div class="cap-desc">Coding, writing, analysis, research &mdash; ask anything</div></div>
+    <div class="cap-card"><div class="cap-ico">&#127912;</div><div class="cap-name">Image generation</div><div class="cap-desc">Say "generate an image of..." and Surge creates it</div></div>
+    <div class="cap-card"><div class="cap-ico">&#128247;</div><div class="cap-name">Computer vision</div><div class="cap-desc">Attach a photo and ask about it — Surge describes it</div></div>
+    <div class="cap-card"><div class="cap-ico">&#127908;</div><div class="cap-name">Voice chat</div><div class="cap-desc">Talk to Surge and hear it reply in your language</div></div>
+    <div class="cap-card"><div class="cap-ico">&#128202;</div><div class="cap-name">Data analysis</div><div class="cap-desc">Attach CSV or text files &mdash; Surge reads and answers</div></div>
+    <div class="cap-card"><div class="cap-ico">&#128196;</div><div class="cap-name">File generation</div><div class="cap-desc">Generate code, HTML, docs &mdash; preview and download</div></div>
+    <div class="cap-card"><div class="cap-ico">&#127760;</div><div class="cap-name">60+ languages</div><div class="cap-desc">Chat and voice in Tamil, Hindi, English and many more</div></div>
+    <div class="cap-card"><div class="cap-ico">&#128274;</div><div class="cap-name">Private projects</div><div class="cap-desc">Organise your work — all chats in a project share context</div></div>
+  </div>
+  <div class="land-footer">
+    <div class="land-free-badge">&#9733; Completely free during beta</div><br>
+    Powered by <em>Qwen2.5-Coder</em>, <em>FLUX.1</em>, <em>Whisper</em> &amp; more &middot; Built on Hugging Face<br>
+    Developed by <em>DEV_PW1123</em> &mdash; Chennai, Tamil Nadu, India &#127470;&#127475;
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="auth-modal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);align-items:center;justify-content:center">
+<div style="width:440px;padding:40px;background:var(--s1);border:1px solid var(--b2);border-radius:var(--rx);position:relative;animation:up .3s ease">
+  <button id="auth-close" style="position:absolute;top:14px;right:14px;background:transparent;border:none;color:var(--t2);font-size:18px;cursor:pointer;font-family:var(--mono)">&#10005;</button>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px">
+    <svg width="30" height="30" viewBox="0 0 1000 1000"><use href="#SL"/></svg>
+    <span style="font-size:20px;letter-spacing:-.03em">Surge<em style="color:var(--acc);font-style:normal">.ai</em></span>
+  </div>
+  <div style="display:flex;border:1px solid var(--b2);border-radius:var(--rs);overflow:hidden;margin-bottom:24px">
+    <button class="atab on" id="tab-login">SIGN IN</button>
+    <button class="atab" id="tab-signup">SIGN UP</button>
+  </div>
+  <div id="lf">
+    <div class="afield"><label>Email</label><input type="email" id="le" placeholder="you@example.com" autocomplete="email"/></div>
+    <div class="afield"><label>Password</label><input type="password" id="lp" placeholder="password"/></div>
+    <button class="abtn" id="login-btn">SIGN IN</button>
+  </div>
+  <div id="signupform" style="display:none">
+    <div class="afield"><label>Display Name</label><input type="text" id="sn" placeholder="Your name" autocomplete="name"/></div>
+    <div class="afield"><label>Email</label><input type="email" id="se" placeholder="you@example.com" autocomplete="email"/></div>
+    <div class="afield"><label>Password</label><input type="password" id="sp" placeholder="Min 6 characters"/></div>
+    <button class="abtn" id="signup-btn">CREATE ACCOUNT</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--t3);font-size:10px;letter-spacing:.08em">
+    <span style="flex:1;height:1px;background:var(--b2)"></span>OR<span style="flex:1;height:1px;background:var(--b2)"></span>
+  </div>
+  <button class="oauth-btn" id="google-btn" style="width:100%">
+    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+    Continue with Google
+  </button>
+  <div class="aerr" id="aerr"></div>
+</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none;height:100vh;flex-direction:column;position:relative;z-index:1">
+  <div id="topbar" style="height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--b1);background:rgba(7,9,12,.95);backdrop-filter:blur(12px);flex-shrink:0;position:relative;z-index:100">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div id="brand-home" style="display:flex;align-items:center;gap:9px;cursor:pointer">
+        <svg width="20" height="20" viewBox="0 0 1000 1000"><use href="#SL"/></svg>
+        <span style="font-size:16px;letter-spacing:-.02em">Surge<em style="color:var(--acc);font-style:normal">.ai</em></span>
+      </div>
+      <div id="bc" style="display:none;align-items:center;gap:5px;font-size:11px;color:var(--t3)">
+        <span style="color:var(--t3)">/</span>
+        <span id="bc1" style="color:var(--t2);cursor:pointer"></span>
+        <span id="bcs2" style="display:none;color:var(--t3)">/</span>
+        <span id="bc2" style="display:none;color:var(--acc)"></span>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px"><button class="ib" id="toggle-sb-btn">&#9776;</button></div>
+  </div>
+  <div id="body" style="display:flex;flex:1;overflow:hidden">
+    <div id="sb" style="width:256px;flex-shrink:0;border-right:1px solid var(--b1);background:var(--s1);display:flex;flex-direction:column;overflow:hidden;transition:width .22s">
+      <div class="sbh">
+        <span class="sbh-title" id="sb-title">Projects</span>
+        <button class="new-btn" id="sb-new">+ New</button>
+      </div>
+      <div class="sb-scroll" id="sb-list"></div>
+      <div id="sb-user-footer" style="padding:11px 10px;border-top:1px solid var(--b1);flex-shrink:0;position:relative">
+        <div id="sb-user-row" style="display:flex;align-items:center;gap:9px;cursor:pointer;border-radius:var(--rs);padding:4px;transition:background .15s">
+          <div id="sb-av" style="width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:1.5px solid transparent;overflow:hidden"></div>
+          <div style="flex:1;min-width:0">
+            <div id="sb-uname" style="font-size:12px;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+            <div id="sb-uemail" style="font-size:10px;color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px"></div>
+          </div>
+          <span style="font-size:10px;color:var(--t3)">&#9650;</span>
+        </div>
+        <div id="profile-menu" style="display:none;position:absolute;bottom:calc(100% + 4px);left:8px;right:8px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);overflow:hidden;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+          <div class="pmenu-item" id="pm-profile">&#128100; Customise profile</div>
+          <div class="pmenu-item" id="pm-settings">&#9881; Settings</div>
+          <div class="pmenu-divider"></div>
+          <div class="pmenu-item danger" id="pm-logout">&#9167; Sign out</div>
+          <div class="pmenu-item danger" id="pm-delete">&#128465; Delete account</div>
+        </div>
+      </div>
+    </div>
+    <div id="content" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0">
+      <div id="home" style="flex:1;overflow-y:auto;padding:40px 52px;display:none">
+        <div class="hgreet">Hey, <em id="hname">there</em> &#9889;</div>
+        <p class="hsub" id="hsub">What do you want to do today?</p>
+        <div class="sec-h"><h2 id="lbl-projects">Projects</h2><button class="new-btn" id="home-new-proj">+ New Project</button></div>
+        <div class="cards" id="home-projs"></div>
+        <div class="sec-h"><h2 id="lbl-chats">Quick Chats</h2><button class="new-btn" id="home-new-chat">+ New Chat</button></div>
+        <div class="cards" id="home-chats"></div>
+      </div>
+      <div id="proj-panel" style="flex:1;overflow:hidden;display:none;flex-direction:column">
+        <div class="pp-head">
+          <div class="pp-title-row">
+            <span class="pp-title" id="pp-title"></span>
+            <button class="new-btn" id="pp-new-chat">+ New Chat</button>
+          </div>
+          <div class="pp-tabs">
+            <button class="ptab on" id="ptab-chats">Chats</button>
+            <button class="ptab" id="ptab-inst">Instructions</button>
+            <button class="ptab" id="ptab-files">Files</button>
+          </div>
+        </div>
+        <div class="pp-body">
+          <div class="tpane on" id="tp-chats"><div id="proj-chats"></div></div>
+          <div class="tpane" id="tp-inst">
+            <div class="flbl">Project Instructions</div>
+            <p class="fhint">These are injected into every chat in this project as context.</p>
+            <textarea id="inst-ta" placeholder="Describe what this project is about..."></textarea>
+            <button class="act-btn" id="save-inst-btn">Save Instructions</button>
+          </div>
+          <div class="tpane" id="tp-files">
+            <div class="dz" id="dz"><div class="dz-ico">&#8593;</div><div class="dz-txt">Click or drag to upload files</div><div class="dz-hint">Images, scripts, CSVs, audio, any file type</div></div>
+            <input type="file" id="fi" multiple style="display:none"/>
+            <div class="flist" id="flist"></div>
+          </div>
+        </div>
+      </div>
+      <div id="chat-panel" style="flex:1;overflow:hidden;display:none;flex-direction:column">
+        <!-- SPEAK FREELY WARNING BAR -->
+        <div id="sf-bar">
+          <div class="sf-bar-inner">
+            <div class="sf-bar-txt"><span class="sf-rec-dot"></span><span id="sf-bar-msg">You are being recorded. Press this button to stop recording.</span></div>
+            <button class="sf-stop-btn" id="sf-stop-btn">Stop Recording</button>
+          </div>
+        </div>
+        <div class="chat-top">
+          <span class="ct-name" id="ct-name">Chat</span>
+          <span class="cbadge ctx" id="ctx-badge">&#9881; Project context</span>
+          <span id="lang-badge" style="font-size:10px;padding:2px 8px;border-radius:999px;background:rgba(180,100,255,.08);border:1px solid rgba(180,100,255,.2);color:var(--ac3);display:none"></span>
+        </div>
+        <div style="flex:1;overflow:hidden;display:flex">
+          <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0">
+            <div id="msgs" style="flex:1;overflow-y:auto;padding:20px 26px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth"></div>
+            <div id="ibar">
+              <div class="ibar-ctrl">
+                <button class="att-btn" id="att-btn">&#128206; Attach</button>
+                <input type="file" id="cai" multiple style="display:none"/>
+                <button class="att-btn" id="ptt-btn" title="Hold to talk">&#127908; Hold</button>
+                <button class="att-btn" id="listen-toggle" title="Always listening">&#128263; Listen</button>
+                <button class="att-btn" id="tts-btn" title="Toggle AI voice reply">&#128264; AI Speak: OFF</button>
+                <button class="sf-btn" id="sf-btn" title="Speak Freely — live voice chat loop">&#127880; Speak Freely</button>
+              </div>
+              <div class="chips" id="chips"></div>
+              <div id="voice-indicator" style="display:none;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,79,107,.08);border:1px solid rgba(255,79,107,.2);border-radius:var(--rs);margin-bottom:8px;font-size:11px;color:var(--red)">
+                <span style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1s infinite;flex-shrink:0"></span>
+                <span id="voice-status">Recording...</span>
+                <span style="margin-left:auto;cursor:pointer" id="voice-cancel">&#10005; Cancel</span>
+              </div>
+              <div class="irow">
+                <textarea id="chat-inp" rows="1" placeholder="Ask anything... (attach an image to analyse it, or say 'generate an image of...')"></textarea>
+                <button id="send-btn"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 6.5L12 1L6.5 12L6 7L1 6.5Z" fill="currentColor"/></svg></button>
+              </div>
+              <div class="ihint" id="ihint">Enter to send &middot; Shift+Enter new line &middot; Attach image for vision &middot; Attach file for data analysis</div>
+            </div>
+          </div>
+          <div id="preview-panel" style="display:none;width:45%;border-left:1px solid var(--b1);flex-direction:column;background:var(--s1)">
+            <div style="padding:10px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+              <span style="font-size:11px;color:var(--t2);letter-spacing:.05em" id="preview-title">Preview</span>
+              <div style="display:flex;gap:6px">
+                <button class="ib" id="preview-download" title="Download">&#8595;</button>
+                <button class="ib" id="preview-close" title="Close">&#10005;</button>
+              </div>
+            </div>
+            <div style="flex:1;overflow:auto;padding:0" id="preview-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profile-modal" style="display:none;position:fixed;inset:0;z-index:8500;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);align-items:center;justify-content:center">
+<div style="background:var(--s1);border:1px solid var(--b2);border-radius:var(--rx);padding:28px;width:500px;max-height:88vh;overflow-y:auto;animation:up .22s ease">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+    <span style="font-size:15px;letter-spacing:-.01em;color:var(--t1)">Profile &amp; Settings</span>
+    <button id="profile-close" style="background:transparent;border:none;color:var(--t2);font-size:16px;cursor:pointer">&#10005;</button>
+  </div>
+  <div style="margin-bottom:22px">
+    <div class="flbl">Profile Picture</div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
+      <div id="profile-av-preview" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;border:2px solid var(--acc);overflow:hidden;flex-shrink:0"></div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="act-btn" id="upload-av-btn" style="margin-top:0">&#8593; Upload photo</button>
+        <input type="file" id="av-file-inp" accept="image/*" style="display:none"/>
+        <span style="font-size:10px;color:var(--t3)">or pick a preset below</span>
+      </div>
+    </div>
+    <div style="margin-bottom:8px"><div class="flbl" style="margin-bottom:8px">Animals</div><div id="av-animals" style="display:flex;flex-wrap:wrap;gap:8px"></div></div>
+    <div style="margin-bottom:8px"><div class="flbl" style="margin-bottom:8px">Space</div><div id="av-space" style="display:flex;flex-wrap:wrap;gap:8px"></div></div>
+    <div style="margin-bottom:8px"><div class="flbl" style="margin-bottom:8px">Tech</div><div id="av-tech" style="display:flex;flex-wrap:wrap;gap:8px"></div></div>
+    <div><div class="flbl" style="margin-bottom:8px">Abstract</div><div id="av-abstract" style="display:flex;flex-wrap:wrap;gap:8px"></div></div>
+  </div>
+  <div class="mfield"><label>Display Name</label><input type="text" id="profile-name-inp" placeholder="Your name"/></div>
+  <div class="mfield">
+    <label>Language</label>
+    <select id="lang-select" style="width:100%;padding:9px 11px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-family:var(--mono);font-size:12px;outline:none"></select>
+  </div>
+  <div class="mfield">
+    <label>AI Tone</label>
+    <select id="tone-select" style="width:100%;padding:9px 11px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-family:var(--mono);font-size:12px;outline:none">
+      <option value="casual">Casual — relaxed and conversational (default)</option>
+      <option value="friendly">Friendly — warm and encouraging</option>
+      <option value="formal">Formal — professional and precise</option>
+    </select>
+  </div>
+  <div class="mfield"><label>AI Voice</label><div style="display:flex;flex-direction:column;gap:8px" id="voice-options"></div></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px">
+    <button class="mcancel" id="profile-cancel">Cancel</button>
+    <button class="mok" id="profile-save">Save changes</button>
+  </div>
+</div>
+</div>
+
+<!-- GENERIC MODAL -->
+<div id="modal-ov" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);align-items:center;justify-content:center">
+<div class="mbox">
+  <div class="mtitle" id="mtitle"></div>
+  <div id="mbody"></div>
+  <div class="macts"><button class="mcancel" id="modal-cancel">Cancel</button><button class="mok" id="mok">Create</button></div>
+</div>
+</div>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+var SB_URL='https://rkdtmhuwxxnewbjimgmj.supabase.co';
+var SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrZHRtaHV3eHhuZXdiamltZ21qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMDkyNzksImV4cCI6MjA5MTU4NTI3OX0.7V_aiUKmMgAgDkapxgY5BlC-0dbMdzZYUj9aHFtKfHQ';
+var HK='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'; // HuggingFace — Whisper voice only
+var HM='Qwen/Qwen2.5-Coder-7B-Instruct:nscale';
+var HF_IMG='black-forest-labs/FLUX.1-schnell'; // FLUX.1-schnell — free, fast HF image model
+var HF_VIS='Salesforce/blip-image-captioning-large';
+var HF_ASR='openai/whisper-large-v3';
+
+var IDENTITY='You are Surge, a helpful AI assistant built by DEV_PW1123, an indie developer from Chennai, Tamil Nadu, India. You run on multiple Hugging Face models.\n\nCAPABILITIES:\n- Chat and answer questions on any topic\n- Write and explain code\n- Generate images: say "generate an image of...", "draw...", "create a picture of...", "paint..." and Surge will create it using FLUX\n- Analyse images: attach a photo and ask questions about it\n- Analyse data files: attach a .csv, .txt, .json etc. and ask questions\n- Transcribe audio: use the microphone button\n- Voice conversation: use Speak Freely mode\n\nHARD RULES — follow always:\n1. Never claim to be Claude, GPT, Gemini, or any other AI brand. You are Surge, made by DEV_PW1123.\n2. Stay completely neutral on politics, elections, governments, political figures. If asked: "I prefer to stay neutral on this topic."\n3. Never swear, be offensive, or disrespectful.\n4. Never discriminate based on race, religion, gender, caste, nationality, age, or disability.\n5. Never advertise or promote products unless the user explicitly asks for recommendations.\n6. Only share links you are confident are safe and official.\n7. Generate only appropriate content. Politely decline explicit, violent, or harmful requests.\n8. You are safe, respectful, and authentic.\n';
+
+var SYSTEM_PROMPT=IDENTITY+'\nYou are concise, accurate, and genuinely helpful. You MUST always remember and reference the full conversation history when answering. Every response should be aware of and build upon what was said earlier in this conversation. Never answer as if the conversation just started when there is history. If the user refers to something from earlier, acknowledge it directly.\n\nIMAGE GENERATION — CRITICAL:\nYou CAN generate images. You are connected to FLUX, a powerful image generation model. When a user asks you to draw, paint, sketch, generate, create, or show any image or picture of anything, you MUST say YES and confirm you are generating it — NEVER say you cannot generate images. If somehow unsure, tell the user to say "generate an image of [description]" and you will do it instantly.\n\nFor code, use code blocks with language names. When you need clarification, use this MCQ format:\n\n**[SURGE_MCQ]**\n[QUESTION] Your clarifying question?\n[A] First option\n[B] Second option\n[C] Third option\n[D] None of the above — let me describe\n**[/SURGE_MCQ]**';
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+var sb=supabase.createClient(SB_URL,SB_ANON);
+var CU=null,CP=null,CC=null,CH=[],ATT=[];
+var profileData={name:'',lang:'en',voice:'default',avatarUrl:'',avatarEmoji:'',tone:'casual'};
+var mediaRecorder=null,audioChunks=[],isListening=false,alwaysListening=false;
+var isSFMode=false,sfMediaRecorder=null,sfAudioContext=null,sfAnalyser=null,sfAudioChunks=[];
+var ttsEnabled=false;
+var speechSynth=window.speechSynthesis;
+
+// ── UTILS ────────────────────────────────────────────────────────────────────
+function G(id){return document.getElementById(id);}
+function E(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+var _tt;
+function toast(msg,type){var el=G('toast');el.textContent=msg;el.className='show '+(type||'');clearTimeout(_tt);_tt=setTimeout(function(){el.className='';},3000);}
+function skel(id,n,t){var el=G(id);if(!el)return;var h='';for(var i=0;i<n;i++)h+='<div class="skel '+(t==='card'?'skel-card':'skel-item')+'"></div>';el.innerHTML=h;}
+function fmtDate(s){return s?new Date(s).toLocaleDateString():'';}
+function fIco(n){var e=(n.split('.').pop()||'').toLowerCase();return({png:'&#128444;',jpg:'&#128444;',jpeg:'&#128444;',gif:'&#128444;',svg:'&#128444;',mp4:'&#127909;',mp3:'&#127925;',wav:'&#127925;',pdf:'&#128196;',cs:'&#128187;',gd:'&#128187;',cpp:'&#128187;',h:'&#128187;',py:'&#128013;',js:'&#128187;',ts:'&#128187;',json:'&#128203;',txt:'&#128221;',md:'&#128221;',csv:'&#128202;',xlsx:'&#128202;',html:'&#127760;',blend:'&#127912;'})[e]||'&#128230;';}
+function fSz(b){if(!b)return'?';if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB';}
+function avc(s){var AVC=['#4fffb0','#00d4ff','#b464ff','#ffb84f','#ff4f6b','#ff79c6'];var h=0;for(var i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i);return AVC[Math.abs(h)%AVC.length];}
+function ini(n){return(n||'?').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'?';}
+
+// ── LANGUAGES ────────────────────────────────────────────────────────────────
+var LANGS=[
+  {code:'en',name:'English'},{code:'ta',name:'Tamil — தமிழ்'},{code:'hi',name:'Hindi — हिन्दी'},
+  {code:'te',name:'Telugu — తెలుగు'},{code:'kn',name:'Kannada — ಕನ್ನಡ'},{code:'ml',name:'Malayalam — മലയാളം'},
+  {code:'mr',name:'Marathi — मराठी'},{code:'gu',name:'Gujarati — ગુજરાતી'},{code:'bn',name:'Bengali — বাংলা'},
+  {code:'pa',name:'Punjabi — ਪੰਜਾਬੀ'},{code:'ur',name:'Urdu — اردو'},{code:'fr',name:'French — Français'},
+  {code:'es',name:'Spanish — Español'},{code:'de',name:'German — Deutsch'},{code:'it',name:'Italian — Italiano'},
+  {code:'pt',name:'Portuguese — Português'},{code:'ru',name:'Russian — Русский'},{code:'zh',name:'Chinese — 中文'},
+  {code:'ja',name:'Japanese — 日本語'},{code:'ko',name:'Korean — 한국어'},{code:'ar',name:'Arabic — العربية'},
+  {code:'tr',name:'Turkish — Türkçe'},{code:'vi',name:'Vietnamese — Tiếng Việt'},{code:'th',name:'Thai — ภาษาไทย'},
+  {code:'nl',name:'Dutch — Nederlands'},{code:'pl',name:'Polish — Polski'},{code:'sv',name:'Swedish — Svenska'},
+  {code:'da',name:'Danish — Dansk'},{code:'fi',name:'Finnish — Suomi'},{code:'no',name:'Norwegian — Norsk'},
+  {code:'cs',name:'Czech — Čeština'},{code:'ro',name:'Romanian — Română'},{code:'hu',name:'Hungarian — Magyar'},
+  {code:'id',name:'Indonesian — Bahasa Indonesia'},{code:'ms',name:'Malay — Bahasa Melayu'},
+  {code:'sw',name:'Swahili — Kiswahili'},{code:'he',name:'Hebrew — עברית'},{code:'el',name:'Greek — Ελληνικά'},
+  {code:'uk',name:'Ukrainian — Українська'},{code:'ca',name:'Catalan — Català'}
+];
+
+var AV_PRESETS={
+  animals:['🐱','🐶','🐻','🦊','🐯','🦁','🐰','🐧','🐼','🐨','🦝','🦜'],
+  space:['🌍','⭐','☀️','🌙','🔭','⚡','🌌','🚀','🛸','🌩️','💫','🌟'],
+  tech:['🤖','💻','⚙️','📡','🚀','📻','📱','🔍','🛠️','🔧','🧠','📺'],
+  abstract:['◆','⬤','○','■','△','▷','❖','⬡','⊕','⬜','◉','▲']
+};
+var VOICE_LIST=[
+  {id:'default',name:'Default',desc:'System default voice'},
+  {id:'en-US-f1',name:'Aria',desc:'English, Female, Clear'},
+  {id:'en-US-m1',name:'Marcus',desc:'English, Male, Deep'},
+  {id:'en-GB-f1',name:'Emily',desc:'British, Female'},
+  {id:'en-IN-f1',name:'Priya',desc:'Indian English, Female'},
+];
+
+var I18N={
+  en:{ask:'Ask anything... (attach image to analyse, or say "generate an image of...")',projects:'Projects',chats:'Quick Chats',what_today:'What do you want to do today?'},
+  ta:{ask:'எதுவும் கேளுங்கள்...',projects:'திட்டங்கள்',chats:'விரைவு அரட்டைகள்',what_today:'இன்று என்ன செய்ய விரும்புகிறீர்கள்?'},
+  hi:{ask:'कुछ भी पूछें...',projects:'प्रोजेक्ट',chats:'त्वरित चैट',what_today:'आज क्या करना चाहते हैं?'},
+  te:{ask:'ఏదైనా అడగండి...',projects:'ప్రాజెక్టులు',chats:'శీఘ్ర చాట్లు',what_today:'ఈరోజు ఏమి చేయాలనుకుంటున్నారు?'}
+};
+function tr(k){var d=I18N[profileData.lang]||I18N.en;return d[k]||I18N.en[k]||k;}
+
+function applyLang(){
+  var inp=G('chat-inp');if(inp)inp.placeholder=tr('ask');
+  var hs=G('hsub');if(hs)hs.textContent=tr('what_today');
+  var lp=G('lbl-projects');if(lp)lp.textContent=tr('projects');
+  var lc=G('lbl-chats');if(lc)lc.textContent=tr('chats');
+  if(profileData.lang!=='en'){var l=LANGS.find(function(x){return x.code===profileData.lang;});if(l){G('lang-badge').textContent=l.name.split(' ')[0];G('lang-badge').style.display='inline-flex';}}
+  else G('lang-badge').style.display='none';
+}
+
+// ── LANDING / AUTH ────────────────────────────────────────────────────────────
+function showLanding(){document.body.className='is-landing';G('landing').style.display='flex';G('auth-modal').style.display='none';G('app').style.display='none';}
+function showAuthModal(tab){document.body.className='is-landing';G('landing').style.display='none';G('auth-modal').style.display='flex';authTab(tab||0);}
+function authTab(i){document.querySelectorAll('.atab').forEach(function(el,j){el.classList.toggle('on',j===i);});G('lf').style.display=i===0?'block':'none';G('signupform').style.display=i===1?'block':'none';G('aerr').textContent='';}
+function doLogin(){
+  var em=G('le').value.trim(),pw=G('lp').value;
+  if(!em||!pw){G('aerr').textContent='Please enter email and password.';return;}
+  G('aerr').textContent='Signing in...';
+  sb.auth.signInWithPassword({email:em,password:pw}).then(function(r){if(r.error){var m=r.error.message;if(m.toLowerCase().includes('invalid'))m='Incorrect email or password.';G('aerr').textContent=m;}});
+}
+function doSignup(){
+  var nm=G('sn').value.trim(),em=G('se').value.trim(),pw=G('sp').value;
+  G('aerr').textContent='';
+  if(!nm){G('aerr').textContent='Enter your name.';return;}
+  if(!em){G('aerr').textContent='Enter your email.';return;}
+  if(pw.length<6){G('aerr').textContent='Password must be at least 6 characters.';return;}
+  G('aerr').textContent='Creating account...';
+  sb.auth.signUp({email:em,password:pw,options:{data:{display_name:nm}}}).then(function(r){
+    if(r.error){G('aerr').textContent=r.error.message;return;}
+    G('aerr').style.color='var(--acc)';G('aerr').textContent='Check your email to confirm, then sign in.';
+  });
+}
+function oGoogle(){
+  if(window.location.protocol==='file:'){G('aerr').textContent='Google sign-in requires a hosted URL. Host this file on a web server first.';return;}
+  G('aerr').textContent='Redirecting to Google...';
+  sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});
+}
+function doLogout(){stopSFMode();sb.auth.signOut().then(function(){CU=null;CP=null;CC=null;CH=[];showLanding();});}
+function doDeleteAccount(){
+  if(!confirm('Delete your account?\n\nAll your projects, chats, and messages will be permanently removed. You can sign back in with the same email for a completely fresh start.'))return;
+  var uid=CU.id;toast('Deleting your data...');
+  sb.from('chats').select('id').eq('user_id',uid).then(function(r){
+    if(r.data&&r.data.length){var ids=r.data.map(function(c){return c.id;});return sb.from('messages').delete().in('chat_id',ids);}
+  }).then(function(){return sb.from('chats').delete().eq('user_id',uid);
+  }).then(function(){return sb.from('projects').delete().eq('user_id',uid);
+  }).then(function(){return sb.from('profiles').delete().eq('id',uid);
+  }).then(function(){return sb.auth.signOut();
+  }).then(function(){CU=null;CP=null;CC=null;CH=[];toast('All data deleted. Sign in with the same email to start fresh.','ok');setTimeout(showLanding,1800);
+  }).catch(function(e){toast('Error: '+e.message,'err');sb.auth.signOut().then(showLanding);});
+}
+
+// ── BOOT ─────────────────────────────────────────────────────────────────────
+sb.auth.onAuthStateChange(function(event,session){
+  if(session&&session.user){
+    if(!CU){CU=session.user;bootApp(CU);}  // only boot on first sign-in, not on every focus
+  } else if(event==='SIGNED_OUT'){CU=null;CP=null;CC=null;CH=[];showLanding();}
+});
+sb.auth.getSession().then(function(r){
+  if(r.data&&r.data.session&&r.data.session.user){CU=r.data.session.user;bootApp(CU);}
+  else showLanding();
+});
+function bootApp(user){
+  document.body.className='is-app';
+  G('landing').style.display='none';G('auth-modal').style.display='none';G('app').style.display='flex';
+  var nm=(user.user_metadata&&(user.user_metadata.display_name||user.user_metadata.full_name))||user.email.split('@')[0];
+  profileData.name=nm;
+  try{var saved=localStorage.getItem('surge_profile_'+user.id);if(saved){var sp=JSON.parse(saved);profileData.lang=sp.lang||'en';profileData.voice=sp.voice||'default';profileData.tone=sp.tone||'casual';profileData.avatarEmoji=sp.avatarEmoji||'';profileData.avatarUrl=sp.avatarUrl||'';}}catch(e){}
+  renderUserAvatar();G('sb-uname').textContent=nm;G('sb-uemail').textContent=user.email;G('hname').textContent=nm.split(' ')[0];
+  sb.from('profiles').upsert({id:user.id},{onConflict:'id'}).then(function(){});
+  applyLang();
+  if(!CC&&!CP)goHome();  // only go home if not already in a chat/project
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function showPanel(id){['home','proj-panel','chat-panel'].forEach(function(p){var el=G(p);el.style.display=(el.id===id)?(el.id==='home'?'block':'flex'):'none';});}
+function toggleSB(){var s=G('sb');s.style.width=s.style.width==='0px'?'256px':'0px';}
+function setBC(p,c){var bc=G('bc');if(!p){bc.style.display='none';return;}bc.style.display='flex';G('bc1').textContent=p;G('bcs2').style.display=c?'':'none';G('bc2').style.display=c?'':'none';if(c)G('bc2').textContent=c;}
+function goHome(){CP=null;CC=null;CH=[];ATT=[];closePreview();showPanel('home');setBC(null);G('sb-title').textContent=tr('projects');G('sb-new').textContent='+ New';loadSBProjects();loadHomeProjects();loadHomeChats();}
+
+// ── PROFILE ───────────────────────────────────────────────────────────────────
+function toggleProfileMenu(){var m=G('profile-menu');m.style.display=m.style.display==='block'?'none':'block';}
+function openProfileModal(){
+  G('profile-menu').style.display='none';G('profile-name-inp').value=profileData.name;
+  var ls=G('lang-select');ls.innerHTML='';LANGS.forEach(function(l){var o=document.createElement('option');o.value=l.code;o.textContent=l.name;if(l.code===profileData.lang)o.selected=true;ls.appendChild(o);});
+  var ts=G('tone-select');if(ts)ts.value=profileData.tone||'casual';
+  var vo=G('voice-options');vo.innerHTML='';
+  VOICE_LIST.forEach(function(v){
+    var el=document.createElement('div');el.className='voice-opt'+(v.id===profileData.voice?' on':'');
+    el.innerHTML='<div style="flex:1"><div style="font-size:12px;color:var(--t1)">'+v.name+'</div><div style="font-size:10px;color:var(--t3)">'+v.desc+'</div></div><button style="padding:3px 8px;background:var(--acd);border:1px solid rgba(79,255,176,.2);border-radius:3px;color:var(--acc);font-family:var(--mono);font-size:10px;cursor:pointer">&#9654; Try</button>';
+    el.querySelector('button').addEventListener('click',function(e){e.stopPropagation();tryVoice(v);});
+    el.addEventListener('click',function(e){if(e.target.tagName==='BUTTON')return;profileData.voice=v.id;document.querySelectorAll('.voice-opt').forEach(function(x){x.classList.toggle('on',x===el);});});
+    vo.appendChild(el);
+  });
+  renderProfileAvatarPreview();
+  Object.keys(AV_PRESETS).forEach(function(cat){var grid=G('av-'+cat);if(!grid)return;grid.innerHTML='';AV_PRESETS[cat].forEach(function(emoji){var el=document.createElement('div');el.className='av-preset'+(profileData.avatarEmoji===emoji?' on':'');el.textContent=emoji;el.addEventListener('click',function(){profileData.avatarEmoji=emoji;profileData.avatarUrl='';document.querySelectorAll('.av-preset').forEach(function(x){x.classList.remove('on');});el.classList.add('on');renderProfileAvatarPreview();});grid.appendChild(el);});});
+  G('profile-modal').style.display='flex';
+}
+function renderProfileAvatarPreview(){var av=G('profile-av-preview');if(profileData.avatarUrl){av.innerHTML='<img src="'+profileData.avatarUrl+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>';}else if(profileData.avatarEmoji){av.textContent=profileData.avatarEmoji;av.style.background='var(--s2)';av.style.color='var(--t1)';}else{var nm=profileData.name||'?';var col=avc(nm);av.textContent=ini(nm);av.style.background=col+'22';av.style.color=col;}}
+function renderUserAvatar(){var av=G('sb-av');if(profileData.avatarUrl){av.innerHTML='<img src="'+profileData.avatarUrl+'" style="width:100%;height:100%;object-fit:cover"/>';av.style.border='1.5px solid var(--acc)';}else if(profileData.avatarEmoji){av.textContent=profileData.avatarEmoji;av.style.background='var(--s2)';av.style.border='1.5px solid var(--acc)';}else{var nm=profileData.name||'?';var col=avc(nm);av.textContent=ini(nm);av.style.background=col+'22';av.style.color=col;av.style.border='1.5px solid '+col+'55';}}
+function tryVoice(v){if(!speechSynth)return;speechSynth.cancel();var utt=new SpeechSynthesisUtterance('Hello! I am '+v.name+'. This is how I sound.');utt.lang=profileData.lang||'en';var voices=speechSynth.getVoices();if(voices.length){var pick=voices.find(function(vv){return vv.lang.startsWith(profileData.lang)&&vv.name.toLowerCase().includes(v.name.toLowerCase());});if(pick)utt.voice=pick;}speechSynth.speak(utt);}
+function saveProfile(){
+  profileData.name=(G('profile-name-inp').value||'').trim()||profileData.name;
+  profileData.lang=G('lang-select').value||'en';
+  profileData.tone=(G('tone-select')&&G('tone-select').value)||'casual';
+  G('profile-modal').style.display='none';renderUserAvatar();G('sb-uname').textContent=profileData.name;G('hname').textContent=profileData.name.split(' ')[0];
+  applyLang();
+  if(CU)localStorage.setItem('surge_profile_'+CU.id,JSON.stringify({lang:profileData.lang,voice:profileData.voice,tone:profileData.tone,avatarEmoji:profileData.avatarEmoji,avatarUrl:profileData.avatarUrl}));
+  toast('Profile saved','ok');
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+function loadSBProjects(){
+  skel('sb-list',4,'item');
+  sb.from('projects').select('*').eq('user_id',CU.id).order('created_at',{ascending:false}).then(function(r){
+    var l=G('sb-list');l.innerHTML='';
+    if(!r.data||!r.data.length){l.innerHTML='<div style="font-size:11px;color:var(--t3);padding:10px 8px">No projects yet</div>';return;}
+    r.data.forEach(function(p){var el=document.createElement('div');el.className='si'+(CP&&CP.id===p.id?' on':'');el.innerHTML='<span class="si-ico">&#9672;</span><span class="si-name">'+E(p.title||'Untitled')+'</span><span class="si-del">&#10005;</span>';el.querySelector('.si-del').addEventListener('click',function(ev){ev.stopPropagation();delProj(p.id);});el.addEventListener('click',function(){openProj(p);});l.appendChild(el);});
+  });
+}
+function loadSBChats(){
+  if(!CP)return;G('sb-title').textContent='Chats';G('sb-new').textContent='+ New Chat';skel('sb-list',4,'item');
+  sb.from('chats').select('*').eq('project_id',CP.id).order('updated_at',{ascending:false}).then(function(r){
+    var l=G('sb-list');l.innerHTML='';
+    var bk=document.createElement('div');bk.className='si';bk.style.marginBottom='6px';bk.innerHTML='<span class="si-ico">&#8592;</span><span class="si-name">'+E(CP.title||'Project')+'</span>';bk.addEventListener('click',showProjPanel);l.appendChild(bk);
+    var lb=document.createElement('div');lb.className='sb-lbl';lb.textContent='Chats';l.appendChild(lb);
+    if(!r.data||!r.data.length){var e=document.createElement('div');e.style.cssText='font-size:11px;color:var(--t3);padding:6px 8px';e.textContent='No chats yet';l.appendChild(e);return;}
+    r.data.forEach(function(c){var el=document.createElement('div');el.className='si'+(CC&&CC.id===c.id?' on':'');el.innerHTML='<span class="si-ico">&#128172;</span><span class="si-name">'+E(c.name||'Chat')+'</span><span class="si-del">&#10005;</span>';el.querySelector('.si-del').addEventListener('click',function(ev){ev.stopPropagation();delChat(c.id,true);});el.addEventListener('click',function(){openChat(c);});l.appendChild(el);});
+  });
+}
+
+// ── HOME DATA ─────────────────────────────────────────────────────────────────
+function loadHomeProjects(){
+  skel('home-projs',2,'card');
+  sb.from('projects').select('*').eq('user_id',CU.id).order('created_at',{ascending:false}).then(function(r){
+    var g=G('home-projs');g.innerHTML='';
+    if(!r.data||!r.data.length){g.innerHTML='<div class="empty-s"><p>No projects yet.</p><button class="new-btn" id="hp-btn" style="margin:auto">+ Create Project</button></div>';G('hp-btn')&&G('hp-btn').addEventListener('click',openProjModal);return;}
+    r.data.forEach(function(p){var el=document.createElement('div');el.className='hcard';el.innerHTML='<div class="hcard-ico">&#9672;</div><div class="hcard-name">'+E(p.title||'Untitled')+'</div><div class="hcard-desc">'+E(p.description||'No description')+'</div><div class="hcard-meta">'+fmtDate(p.created_at)+'</div>';el.addEventListener('click',function(){openProj(p);});g.appendChild(el);});
+  });
+}
+function loadHomeChats(){
+  skel('home-chats',2,'card');
+  sb.from('chats').select('*').eq('user_id',CU.id).is('project_id',null).order('updated_at',{ascending:false}).then(function(r){
+    var g=G('home-chats');g.innerHTML='';
+    if(!r.data||!r.data.length){g.innerHTML='<div class="empty-s"><p>No quick chats yet.</p><button class="new-btn" id="hc-btn" style="margin:auto">+ Start Chat</button></div>';G('hc-btn')&&G('hc-btn').addEventListener('click',function(){openChatModal(null);});return;}
+    r.data.forEach(function(c){var el=document.createElement('div');el.className='hcard';el.innerHTML='<div class="hcard-ico">&#128172;</div><div class="hcard-name">'+E(c.name||'Chat')+'</div><div class="hcard-desc">'+E(c.last_message||'No messages')+'</div><div class="hcard-meta">'+fmtDate(c.updated_at)+'</div>';el.addEventListener('click',function(){openChat(c);});g.appendChild(el);});
+  });
+}
+
+// ── PROJECTS ──────────────────────────────────────────────────────────────────
+function openProjModal(){openMod('New Project','<div class="mfield"><label>Name</label><input type="text" id="mpn" placeholder="e.g. Research notes" autocomplete="off"/></div><div class="mfield"><label>Description</label><input type="text" id="mpd" placeholder="What is this project about?" autocomplete="off"/></div>','Create Project',createProj);}
+function createProj(){var nm=(G('mpn')?G('mpn').value:'').trim();if(!nm){toast('Enter a project name','err');return;}sb.from('projects').insert({user_id:CU.id,title:nm,description:(G('mpd')?G('mpd').value.trim():''),instructions:''}).select().then(function(r){if(r.error){toast('Failed: '+r.error.message,'err');return;}closeMod();toast('Project created!','ok');loadHomeProjects();loadSBProjects();});}
+function openProj(p){CP=p;CC=null;CH=[];showProjPanel();}
+function showProjPanel(){G('pp-title').textContent=CP.title||'Project';setBC(CP.title||'Project',null);showPanel('proj-panel');['chats','inst','files'].forEach(function(t){G('ptab-'+t).classList.toggle('on',t==='chats');G('tp-'+t).classList.toggle('on',t==='chats');});loadSBChats();loadProjChats();}
+function delProj(id){if(!confirm('Delete project?'))return;sb.from('projects').delete().eq('id',id).then(function(){toast('Deleted');if(CP&&CP.id===id){CP=null;goHome();}else{loadSBProjects();loadHomeProjects();}});}
+function ppTab(t){['chats','inst','files'].forEach(function(x){G('ptab-'+x).classList.toggle('on',x===t);G('tp-'+x).classList.toggle('on',x===t);});if(t==='inst'&&CP)G('inst-ta').value=CP.instructions||'';if(t==='files')loadFiles();if(t==='chats')loadProjChats();}
+function saveInst(){if(!CP)return;var inst=G('inst-ta').value.trim();sb.from('projects').update({instructions:inst}).eq('id',CP.id).then(function(r){if(r.error){toast('Failed','err');return;}CP.instructions=inst;toast('Saved','ok');});}
+
+// ── FILES ─────────────────────────────────────────────────────────────────────
+function loadFiles(){
+  if(!CP)return;skel('flist',2,'item');
+  sb.from('files').select('*').eq('project_id',CP.id).order('uploaded_at',{ascending:false}).then(function(r){
+    var l=G('flist');l.innerHTML='';
+    if(!r.data||!r.data.length){l.innerHTML='<p style="font-size:11px;color:var(--t3)">No files yet.</p>';return;}
+    r.data.forEach(function(f){var el=document.createElement('div');el.className='fitem';el.innerHTML='<div class="fi-ico">'+fIco(f.name)+'</div><div class="fi-info"><div class="fi-name">'+E(f.name)+'</div><div class="fi-size">'+fSz(f.size)+'</div></div><a class="fi-dl" href="'+f.url+'" target="_blank" download>&#8595;</a><button class="fi-del" data-id="'+f.id+'" data-path="'+E(f.storage_path||'')+'">Remove</button>';el.querySelector('.fi-del').addEventListener('click',function(ev){delFile(ev.target.dataset.id,ev.target.dataset.path);});l.appendChild(el);});
+  });
+}
+function uploadFiles(files){
+  if(!CP||!files.length)return;
+  Array.from(files).forEach(function(f){toast('Uploading '+f.name+'...');var path=CU.id+'/'+CP.id+'/'+Date.now()+'_'+f.name;sb.storage.from('project-files').upload(path,f,{upsert:true}).then(function(r){if(r.error){toast('Upload failed','err');return;}var url=sb.storage.from('project-files').getPublicUrl(path).data.publicUrl;return sb.from('files').insert({project_id:CP.id,name:f.name,size:f.size,url:url,storage_path:path});}).then(function(){toast('Uploaded '+f.name,'ok');loadFiles();}).catch(function(){toast('Failed: '+f.name,'err');});});
+}
+function delFile(id,path){if(path)sb.storage.from('project-files').remove([path]).then(function(){});sb.from('files').delete().eq('id',id).then(function(){toast('Removed');loadFiles();});}
+
+// ── CHATS ─────────────────────────────────────────────────────────────────────
+function loadProjChats(){
+  if(!CP)return;skel('proj-chats',3,'item');
+  sb.from('chats').select('*').eq('project_id',CP.id).order('updated_at',{ascending:false}).then(function(r){
+    var l=G('proj-chats');l.innerHTML='';
+    if(!r.data||!r.data.length){l.innerHTML='<div class="empty-s"><p>No chats yet.</p><button class="new-btn" id="pc-btn" style="margin:auto">+ Create Chat</button></div>';G('pc-btn')&&G('pc-btn').addEventListener('click',function(){openChatModal(CP.id);});return;}
+    r.data.forEach(function(c){var el=document.createElement('div');el.className='cli';el.innerHTML='<div style="font-size:15px">&#128172;</div><div class="cli-info"><div class="cli-name">'+E(c.name||'Chat')+'</div><div class="cli-prev">'+E(c.last_message||'No messages')+'</div></div><span class="cli-del">&#10005;</span>';el.querySelector('.cli-del').addEventListener('click',function(ev){ev.stopPropagation();delChat(c.id,true);});el.addEventListener('click',function(){openChat(c);});l.appendChild(el);});
+  });
+}
+function openChatModal(projId){openMod('New Chat','<div class="mfield"><label>Chat Name</label><input type="text" id="mcn" placeholder="e.g. My research" autocomplete="off"/></div>','Create Chat',function(){createChat(projId);});}
+function createChat(projId){var nm=(G('mcn')?G('mcn').value:'').trim();if(!nm){toast('Enter a chat name','err');return;}var row={name:nm,user_id:CU.id,last_message:''};if(projId)row.project_id=projId;sb.from('chats').insert(row).select().then(function(r){if(r.error){toast('Failed: '+r.error.message,'err');return;}closeMod();toast('Chat created!','ok');if(projId){loadProjChats();loadSBChats();}openChat(r.data[0]);});}
+function openChat(c){
+  if(CC)localStorage.setItem('surge_scroll_'+CC.id,G('msgs').scrollTop);
+  CC=c;CH=[];ATT=[];G('chips').innerHTML='';
+  G('ct-name').textContent=c.name||'Chat';
+  var ctxB=G('ctx-badge');if(c.project_id&&CP&&CP.instructions)ctxB.classList.add('on');else ctxB.classList.remove('on');
+  if(c.project_id&&CP)setBC(CP.title||'Project',c.name||'Chat');else setBC(c.name||'Chat',null);
+  showPanel('chat-panel');closePreview();
+  var msgs=G('msgs');msgs.innerHTML='<div class="ces"><div class="ces-ico">&#128172;</div><div class="ces-txt">Loading...</div></div>';
+  sb.from('messages').select('*').eq('chat_id',c.id).order('created_at',{ascending:true}).then(function(r){
+    CH=[];
+    if(r.data&&r.data.length)r.data.forEach(function(m){
+      var msgObj={role:m.role,content:m.content,sources:m.sources||[]};
+      // Restore generated images — content was saved as __SURGE_IMG__<dataUrl>
+      if(m.content&&m.content.startsWith('__SURGE_IMG__')){
+        msgObj.imageUrl=m.content.slice(13);
+        msgObj.content='Here is your generated image:';
+      }
+      CH.push(msgObj);
+    });
+    renderMsgs();var saved=parseInt(localStorage.getItem('surge_scroll_'+c.id)||'-1');setTimeout(function(){msgs.scrollTop=saved>=0?saved:msgs.scrollHeight;},60);
+  });
+  var draft=localStorage.getItem('surge_draft_'+c.id)||'';var inp=G('chat-inp');inp.value=draft;if(draft){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px';}
+}
+function delChat(id,isProj){
+  if(!confirm('Delete chat?'))return;
+  sb.from('messages').delete().eq('chat_id',id).then(function(){return sb.from('chats').delete().eq('id',id);}).then(function(){
+    localStorage.removeItem('surge_draft_'+id);localStorage.removeItem('surge_scroll_'+id);toast('Deleted');
+    if(CC&&CC.id===id){CC=null;CH=[];if(isProj&&CP)showProjPanel();else goHome();}
+    else{if(isProj){loadProjChats();loadSBChats();}else loadHomeChats();}
+  });
+}
+
+// ── ATTACHMENTS ───────────────────────────────────────────────────────────────
+function renderChips(){
+  G('chips').innerHTML=ATT.map(function(f,i){if(f.isImage)return'<div class="chip"><img src="'+f.dataUrl+'" class="img-att-prev"/><span class="chip-x" data-i="'+i+'">&#10005;</span></div>';return'<div class="chip">'+fIco(f.name)+' '+E(f.name)+'<span class="chip-x" data-i="'+i+'">&#10005;</span></div>';}).join('');
+  G('chips').querySelectorAll('.chip-x').forEach(function(el){el.addEventListener('click',function(){ATT.splice(parseInt(el.dataset.i),1);renderChips();});});
+}
+
+// ── PREVIEW ───────────────────────────────────────────────────────────────────
+function openPreview(title,html,downloadFn){var pp=G('preview-panel');pp.style.display='flex';G('preview-title').textContent=title||'Preview';G('preview-content').innerHTML=html;G('preview-download').onclick=downloadFn||null;}
+function closePreview(){G('preview-panel').style.display='none';G('preview-content').innerHTML='';}
+
+// ── MESSAGES ──────────────────────────────────────────────────────────────────
+function renderMsgs(){var c=G('msgs');c.innerHTML='';if(!CH.length){c.innerHTML='<div class="ces"><div class="ces-ico">&#128172;</div><div class="ces-txt">Ask anything</div></div>';return;}CH.forEach(function(m){addMsg(m.role,m.content,m.sources,false,m.imageUrl);});}
+function addMsg(role,content,sources,scroll,imageUrl){
+  if(scroll===undefined)scroll=true;
+  var c=G('msgs');var ces=c.querySelector('.ces');if(ces)ces.remove();
+  var row=document.createElement('div');row.className='mrow '+role;
+  var nm=profileData.name||'You',col=avc(nm);
+  var avHtml;
+  if(role==='bot'){avHtml='<div class="mav bot"><svg width="16" height="16" viewBox="0 0 1000 1000"><use href="#SL"/></svg></div>';}
+  else if(profileData.avatarEmoji){avHtml='<div class="mav user" style="background:var(--s2);border:1.5px solid var(--acc);font-size:16px">'+profileData.avatarEmoji+'</div>';}
+  else if(profileData.avatarUrl){avHtml='<div class="mav user" style="border:1.5px solid var(--acc)"><img src="'+profileData.avatarUrl+'" style="width:100%;height:100%;object-fit:cover;border-radius:7px"/></div>';}
+  else{avHtml='<div class="mav user" style="background:'+col+'22;color:'+col+';border-color:'+col+'55">'+ini(nm)+'</div>';}
+  var imgHtml=imageUrl?'<div style="margin:6px 0"><img src="'+imageUrl+'" class="gen-img"/><div style="display:flex;gap:6px;margin-top:4px"><a class="dlbtn" href="'+imageUrl+'" download="surge-image.png">&#8595; Download</a></div></div>':'';
+  var srcHtml='';if(sources&&sources.length){srcHtml='<div class="src-sec"><div class="src-lbl">Sources</div>'+sources.map(function(s){return'<a class="src-lnk" href="'+E(s.url||'#')+'" target="_blank" rel="noopener noreferrer">&#8599; '+E(s.title||s.url||'Ref')+'</a>';}).join('')+'</div>';}
+  row.innerHTML=avHtml+'<div class="mbody"><span class="mlbl">'+(role==='bot'?'SURGE AI':nm.toUpperCase())+'</span><div class="bbl">'+imgHtml+renderContent(content)+srcHtml+'</div></div>';
+  c.appendChild(row);if(scroll)c.scrollTop=c.scrollHeight;
+}
+function renderContent(text){
+  var mcqRx=/\*\*\[SURGE_MCQ\]\*\*\s*\n\[QUESTION\]\s*(.*?)\n((?:\[[A-D]\][ \t]+.*(?:\n|$))+)\*\*\[\/SURGE_MCQ\]\*\*/s;
+  var mm=text.match(mcqRx);
+  if(mm){var q=mm[1].trim(),optsRaw=mm[2],opts=[];var re=/\[([A-D])\][ \t]+(.*)/g,m2;while((m2=re.exec(optsRaw))!==null)opts.push({k:m2[1],v:m2[2].trim()});var before=text.slice(0,text.indexOf('**[SURGE_MCQ]**')),after=text.slice(text.indexOf('**[/SURGE_MCQ]**')+16);var mcqH='<div class="mcq-wrap"><div class="mcq-q">'+E(q)+'</div>';opts.forEach(function(o){mcqH+='<div class="mcq-opt" data-ans="'+E(o.k+') '+o.v)+'"><span class="mcq-key">'+E(o.k)+'</span>'+E(o.v)+'</div>';});return renderPlain(before)+mcqH+'</div>'+renderPlain(after);}
+  return renderPlain(text);
+}
+function renderPlain(text){
+  var parts=text.split(/(```[a-zA-Z0-9_+-]*\n?[\s\S]*?```)/g);
+  return parts.map(function(part){
+    var m=part.match(/^```([a-zA-Z0-9_+-]*)\n?([\s\S]*?)```$/);
+    if(m){var lang=m[1]||'code',code=m[2],id='cb'+Math.random().toString(36).slice(2,8);var isHtml=lang.toLowerCase()==='html'||lang.toLowerCase()==='svg';var pvBtn=isHtml?'<button class="pvbtn" data-code="'+encodeURIComponent(code)+'">&#128065; Preview</button>':'';return'<div class="cblk"><div class="chdr"><span class="clang">'+E(lang)+'</span><div style="display:flex;gap:4px">'+pvBtn+'<button class="cpbtn" data-raw="'+encodeURIComponent(code)+'">Copy</button><a class="dlbtn" href="data:text/plain;charset=utf-8,'+encodeURIComponent(code)+'" download="surge-code.'+lang+'">&#8595;</a></div></div><div class="cbody" id="'+id+'">'+hlCode(code,lang)+'</div></div>';}
+    return E(part).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code style="background:var(--s3);padding:1px 5px;border-radius:3px;font-size:11px">$1</code>').replace(/\n/g,'<br>');
+  }).join('');
+}
+function hlCode(code,lang){
+  var e=E(code),l=(lang||'').toLowerCase();
+  if(l==='csharp'||l==='cs'||l==='c#'){e=e.replace(/\/\/[^\n]*/g,function(m){return'<span class="cm">'+m+'</span>';});e=e.replace(/("(?:[^"\\]|\\.)*")/g,function(m){return'<span class="st">'+m+'</span>';});e=e.replace(/\b(using|public|private|protected|static|void|class|struct|interface|new|return|if|else|for|foreach|while|override|virtual|async|await|yield|var|null|true|false|this|base|readonly|const|get|set|try|catch|finally|throw|namespace|sealed|abstract|partial|event|delegate|in|out|ref|params|is|as|where)\b/g,function(m){return'<span class="kw">'+m+'</span>';});e=e.replace(/\b(int|float|double|bool|string|char|List|Dictionary|Vector2|Vector3|Quaternion|Transform|GameObject|MonoBehaviour|Rigidbody|IEnumerator|Coroutine|Action|SerializeField)\b/g,function(m){return'<span class="tp">'+m+'</span>';});}
+  else if(l==='python'||l==='py'){e=e.replace(/#[^\n]*/g,function(m){return'<span class="cm">'+m+'</span>';});e=e.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,function(m){return'<span class="st">'+m+'</span>';});e=e.replace(/\b(def|class|import|from|return|if|elif|else|for|while|try|except|finally|with|as|pass|break|continue|and|or|not|in|is|lambda|yield|None|True|False|self)\b/g,function(m){return'<span class="kw">'+m+'</span>';});}
+  else if(l==='javascript'||l==='js'||l==='typescript'||l==='ts'){e=e.replace(/\/\/[^\n]*/g,function(m){return'<span class="cm">'+m+'</span>';});e=e.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g,function(m){return'<span class="st">'+m+'</span>';});e=e.replace(/\b(const|let|var|function|return|if|else|for|while|class|new|import|export|default|async|await|try|catch|finally|throw|typeof|instanceof|null|undefined|true|false|this|super|extends)\b/g,function(m){return'<span class="kw">'+m+'</span>';});}
+  return e;
+}
+
+// ── CROSS-CHAT PROJECT CONTEXT ────────────────────────────────────────────────
+// Loads recent messages from other chats in the same project so the AI
+// is aware of what was discussed elsewhere in this project
+function getProjChatsContext(){
+  if(!CP||!CC)return Promise.resolve('');
+  return sb.from('chats').select('id,name').eq('project_id',CP.id).then(function(r){
+    if(!r.data||!r.data.length)return'';
+    var others=r.data.filter(function(c){return c.id!==CC.id;});
+    if(!others.length)return'';
+    return Promise.all(others.slice(0,4).map(function(chat){
+      return sb.from('messages').select('role,content').eq('chat_id',chat.id).order('created_at',{ascending:false}).limit(8).then(function(mr){
+        if(!mr.data||!mr.data.length)return'';
+        var msgs=mr.data.reverse().map(function(m){return(m.role==='assistant'?'Surge':'User')+': '+m.content.slice(0,400);}).join('\n');
+        return'[Chat "'+chat.name+'"]\n'+msgs;
+      }).catch(function(){return'';});
+    })).then(function(parts){
+      var ctx=parts.filter(Boolean).join('\n\n');
+      return ctx?ctx:'';
+    });
+  }).catch(function(){return'';});
+}
+
+// ── BUILD SYSTEM PROMPT ───────────────────────────────────────────────────────
+function buildSysPrompt(projChatsCtx){
+  var sys=SYSTEM_PROMPT;
+  if(profileData.lang&&profileData.lang!=='en'){var l=LANGS.find(function(x){return x.code===profileData.lang;});if(l)sys+='\n\nALWAYS respond in '+l.name.split(' ')[0]+' ('+l.code+'). Do not switch unless user writes in a different language.';}
+  if(profileData.tone==='formal')sys+='\n\nTONE: Be professional, precise, and formal.';
+  else if(profileData.tone==='friendly')sys+='\n\nTONE: Be warm, encouraging, and supportive.';
+  else sys+='\n\nTONE: Be casual, relaxed, and conversational.';
+  if(CP&&CP.instructions)sys+='\n\nPROJECT INSTRUCTIONS:\n'+CP.instructions;
+  if(projChatsCtx)sys+='\n\nOTHER CHATS IN THIS PROJECT (background context — use this to stay consistent across chats):\n'+projChatsCtx;
+  return sys;
+}
+
+// ── HANDLE 401 ────────────────────────────────────────────────────────────────
+function handle401(){
+  var msg='Error 401: HuggingFace token is invalid or expired. Open index.html, search for "var HK=" and replace the token value with a fresh one from huggingface.co → Settings → Access Tokens.';
+  toast('401 — API token invalid or expired','err');removeTyping();addMsg('bot',msg);
+}
+
+// ── SEND MESSAGE (auto-detects mode from attachments/message) ─────────────────
+function sendMsg(){
+  if(!CC)return;
+  var inp=G('chat-inp'),btn=G('send-btn');
+  var msg=inp.value.trim();if(!msg&&!ATT.length)return;
+  inp.value='';inp.style.height='auto';btn.disabled=true;
+  if(CC)localStorage.removeItem('surge_draft_'+CC.id);
+  var attachments=ATT.slice();ATT=[];G('chips').innerHTML='';
+
+  // AUTO-DETECT what to do based on attachments and message content
+  var hasImage=attachments.find(function(f){return f.isImage;});
+  var hasDataFile=attachments.find(function(f){return f.content&&!f.isImage;});
+  // Broad image request detection
+  var isImgRequest=(
+    // Explicit image nouns anywhere in the message
+    /\b(generate|create|draw|make|paint|render|design|sketch|illustrate|produce|imagine|show|give|flux)\b.{0,60}\b(image|picture|photo|illustration|artwork|drawing|painting|sketch|portrait|wallpaper|poster|logo|icon|scene|cartoon|anime|render|visual|selfie|thumbnail|banner|avatar|meme|gif)\b/i.test(msg)
+    // Message STARTS with an art verb (draw a cat, paint me a dog, sketch a house)
+    ||/^(draw|paint|sketch|design|illustrate|imagine|generate|create|make|render|flux)\s/i.test(msg)
+    // Common phrasings with or without the word "image"
+    ||/\b(a photo of|a picture of|an image of|a drawing of|a painting of|a sketch of|an illustration of|show me a|show me an|give me a|give me an|draw me|paint me|make me a|make me an|create a|generate a|render a|flux me|imagine a|picture of|photo of|image of)\b/i.test(msg)
+    // "I want a [thing]" / "I need a [thing]" style — only when clearly visual
+    ||/\b(i want|i need|can you make|can you draw|can you create|can you generate|can you paint|can you sketch|can you show)\b.{0,40}\b(image|picture|photo|illustration|artwork|drawing|painting|sketch|portrait|wallpaper|poster|logo|icon|scene|cartoon|anime|render|visual|selfie|thumbnail|banner|avatar|meme)\b/i.test(msg)
+    // Bare art verbs at any position followed by any subject (draw a cat, paint the ocean)
+    ||/\b(draw|paint|sketch|illustrate)\s+(me\s+)?(a|an|the|some|my)\s+\w/i.test(msg)
+  );
+  // Follow-up image request — if the last bot reply was an image, treat short follow-ups as image modifications
+  var lastBotMsg=CH.length>0?CH[CH.length-1]:null;
+  var lastWasImage=lastBotMsg&&lastBotMsg.imageUrl;
+  if(!isImgRequest&&lastWasImage&&msg.length<180){
+    // Find the original image prompt from history
+    var origPrompt='';
+    for(var hi=CH.length-2;hi>=0;hi--){if(CH[hi].role==='user'){origPrompt=CH[hi].content;break;}}
+    var combinedPrompt=origPrompt?origPrompt+', '+msg:msg;
+    doImageGen(combinedPrompt,btn);return;
+  }
+
+  if(hasImage){doVision(msg,attachments,btn);return;}
+  if(hasDataFile){doDataAnalysis(msg,attachments,btn);return;}
+  if(isImgRequest&&!attachments.length){doImageGen(msg,btn);return;}
+
+  // Normal chat — include full conversation history + project cross-chat context
+  var full=msg;
+  CH.push({role:'user',content:full,sources:[]});addMsg('user',msg);
+  sb.from('messages').insert({chat_id:CC.id,role:'user',content:full,sources:[]}).then(function(){});
+  showTyping();
+
+  getProjChatsContext().then(function(projCtx){
+    return getFilesCtx().then(function(fc){
+      var sys=buildSysPrompt(projCtx);
+      if(fc)sys+='\n\nPROJECT FILES:\n'+fc;
+
+      // Build full conversation history for Qwen
+      var apiMsgs=[{role:'system',content:sys}];
+      CH.slice(0,-1).forEach(function(m){
+        apiMsgs.push({role:m.role==='bot'?'assistant':'user',content:m.content});
+      });
+      apiMsgs.push({role:'user',content:full});
+
+      return fetch('https://router.huggingface.co/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+HK},
+        body:JSON.stringify({model:HM,messages:apiMsgs,max_tokens:2048,temperature:0.2})
+      });
+    });
+  }).then(function(res){
+    if(res.status===401){handle401();throw new Error('401');}
+    if(!res.ok)return res.json().then(function(e){throw new Error((e.error&&e.error.message)||'HTTP '+res.status);});
+    return res.json();
+  }).then(function(data){
+    var reply='',rc=data.choices[0].message.content;
+    if(typeof rc==='string')reply=rc;
+    else if(Array.isArray(rc))reply=rc.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n');
+    var srcs=extractSrcs(reply);removeTyping();
+    CH.push({role:'bot',content:reply,sources:srcs});addMsg('bot',reply,srcs);
+    var sfCb=isSFMode?function(){setTimeout(startSFRecording,400);}:null;
+    speakIfEnabled(reply,sfCb);
+    sb.from('messages').insert({chat_id:CC.id,role:'assistant',content:reply,sources:srcs}).then(function(){});
+    sb.from('chats').update({last_message:reply.slice(0,100),updated_at:new Date().toISOString()}).eq('id',CC.id).then(function(){});
+  }).catch(function(e){
+    removeTyping();
+    if(e.message!=='401'){var em='Error: '+e.message;CH.push({role:'bot',content:em,sources:[]});addMsg('bot',em);}
+    if(isSFMode)setTimeout(startSFRecording,1500);
+  }).then(function(){btn.disabled=false;if(!isSFMode)inp.focus();});
+}
+
+// ── IMAGE GENERATION ─────────────────────────────────────────────────────────
+// Step 1 — LLM expands the prompt so FLUX gets rich, explicit detail.
+// Step 2 — FLUX.1-dev on HuggingFace renders the image (real or surreal).
+function prepareImagePrompt(userPrompt){
+  var sysMsg="You are a precise image generation prompt engineer. Your job is to convert a user's image request into a detailed FLUX prompt that captures EVERY single detail they asked for \u2014 no exceptions, nothing ignored, nothing normalised.\n\nRules:\n1. List EVERY physical attribute the user mentioned \u2014 colour, count, shape, texture, size, position \u2014 explicitly.\n2. Repeat each unusual or specific feature 3 times using different words so the model cannot ignore it. Example: '3 eyes, three eyes, triple eyes on the face'.\n3. If something is ABSENT (no fur, missing arm, no wings), state it 3 times explicitly: 'completely hairless, no fur at all, bald bare skin'.\n4. Never add features the user did NOT ask for.\n5. Never normalise or simplify unusual requests \u2014 if they asked for 7 legs render 7 legs.\n6. For surreal/impossible subjects also append: surreal fantasy concept art, hyperdetailed digital painting, dark fantasy illustration, artstation, deviantart.\n7. For realistic subjects append: photorealistic, highly detailed, sharp focus, professional photography, 8k.\n8. Output ONLY the final prompt text. No explanation, no JSON, no preamble.";
+  return fetch('https://router.huggingface.co/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+HK},
+    body:JSON.stringify({model:HM,messages:[{role:'system',content:sysMsg},{role:'user',content:userPrompt}],max_tokens:500,temperature:0.1})
+  }).then(function(r){return r.json();})
+  .then(function(d){
+    var t='';try{t=d.choices[0].message.content.trim();}catch(e){}
+    return t||userPrompt;
+  }).catch(function(){return userPrompt;});
+}
+
+function doImageGen(prompt,btn){
+  if(!prompt){toast('Describe the image you want','err');btn.disabled=false;return;}
+  CH.push({role:'user',content:prompt,sources:[]});
+  addMsg('user',prompt);showTyping();toast('Expanding prompt...');
+  prepareImagePrompt(prompt).then(function(expandedPrompt){
+    toast('Generating image via FLUX.1... (20-40s)');
+    // Show the expanded prompt as a small note in chat so user can see what was sent
+    var note=document.createElement('div');
+    note.style.cssText='font-size:9px;color:var(--t3);padding:3px 8px;margin:0 26px;font-style:italic;line-height:1.4;word-break:break-word';
+    note.textContent='Prompt sent to FLUX: '+expandedPrompt.slice(0,200)+(expandedPrompt.length>200?'...':'');
+    G('msgs').appendChild(note);
+    return fetch('https://router.huggingface.co/hf-inference/models/'+HF_IMG,{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+HK,'Content-Type':'application/json'},
+      body:JSON.stringify({inputs:expandedPrompt})
+    });
+  }).then(function(r){
+    if(r.status===401){handle401();return Promise.reject(new Error('401'));}
+    if(!r.ok)return r.text().then(function(t){throw new Error('FLUX error ('+r.status+'): '+t.slice(0,100));});
+    return r.blob();
+  }).then(function(blob){
+    return new Promise(function(resolve,reject){
+      var reader=new FileReader();
+      reader.onload=function(e){resolve(e.target.result);};
+      reader.onerror=reject;reader.readAsDataURL(blob);
+    });
+  }).then(function(dataUrl){
+    removeTyping();
+    var reply='Here is your generated image:';
+    CH.push({role:'bot',content:reply,sources:[],imageUrl:dataUrl});
+    addMsg('bot',reply,[],true,dataUrl);
+    sb.from('messages').insert({chat_id:CC.id,role:'assistant',content:'__SURGE_IMG__'+dataUrl,sources:[]}).then(function(){});
+    sb.from('chats').update({last_message:reply.slice(0,80),updated_at:new Date().toISOString()}).eq('id',CC.id).then(function(){});
+  }).catch(function(e){
+    if(e.message!=='401'){removeTyping();addMsg('bot','Image error: '+e.message);}
+  }).then(function(){btn.disabled=false;});
+}
+
+// ── VISION ────────────────────────────────────────────────────────────────────
+function doVision(prompt,attachments,btn){
+  var imgAtt=attachments.find(function(f){return f.isImage;});
+  if(!imgAtt){toast('Attach an image first','err');btn.disabled=false;ATT=attachments;renderChips();return;}
+  addMsg('user',prompt||'Describe this image');showTyping();
+  var base64=imgAtt.dataUrl.split(',')[1];
+  fetch('https://router.huggingface.co/hf-inference/models/'+HF_VIS,{
+    method:'POST',headers:{'Authorization':'Bearer '+HK,'Content-Type':'application/json'},
+    body:JSON.stringify({inputs:base64})
+  }).then(function(r){
+    if(r.status===401){handle401();return Promise.reject(new Error('401'));}
+    if(!r.ok)return r.text().then(function(t){throw new Error('Vision API error: '+t.slice(0,120));});
+    return r.json();
+  }).then(function(data){
+    var desc=Array.isArray(data)?(data[0]&&(data[0].generated_text||data[0].label||JSON.stringify(data[0]))):data.generated_text||JSON.stringify(data);
+    var sys=buildSysPrompt('');
+    var apiMsgs=[{role:'system',content:sys}];
+    CH.slice(0,-1).forEach(function(m){apiMsgs.push({role:m.role==='bot'?'assistant':'user',content:m.content});});
+    apiMsgs.push({role:'user',content:'Image description from vision model: '+desc+'\n\n'+(prompt&&prompt!=='Describe this image'?'User question: '+prompt:'Please describe this image in detail.')});
+    return fetch('https://router.huggingface.co/v1/chat/completions',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+HK},
+      body:JSON.stringify({model:HM,messages:apiMsgs,max_tokens:1024,temperature:0.2})
+    });
+  }).then(function(r){
+    if(r.status===401){handle401();return Promise.reject(new Error('401'));}
+    if(!r.ok)return r.json().then(function(e){throw new Error((e.error&&e.error.message)||'HTTP '+r.status);});
+    return r.json();
+  }).then(function(data){
+    removeTyping();
+    var reply=data.choices&&data.choices[0]&&data.choices[0].message.content||'Could not analyse image.';
+    CH.push({role:'bot',content:reply,sources:[]});addMsg('bot',reply);speakIfEnabled(reply);
+    sb.from('messages').insert({chat_id:CC.id,role:'assistant',content:reply,sources:[]}).then(function(){});
+  }).catch(function(e){if(e.message!=='401'){removeTyping();addMsg('bot','Vision error: '+e.message);}}).then(function(){btn.disabled=false;});
+}
+
+// ── DATA ANALYSIS ─────────────────────────────────────────────────────────────
+function doDataAnalysis(prompt,attachments,btn){
+  var dataAtt=attachments.find(function(f){return f.content;});
+  var sys=buildSysPrompt('')+'\n\nThe user has provided a data file. Analyse it carefully. Give specific numbers, patterns, trends, and actionable insights.';
+  if(dataAtt)sys+='\n\nDATA FILE ('+dataAtt.name+'):\n'+dataAtt.content.slice(0,8000);
+  addMsg('user',prompt||'Analyse this data');showTyping();
+  var apiMsgs=[{role:'system',content:sys}];
+  CH.slice(0,-1).forEach(function(m){apiMsgs.push({role:m.role==='bot'?'assistant':'user',content:m.content});});
+  apiMsgs.push({role:'user',content:prompt||'Analyse this data and give me key insights.'});
+  var apiMsgs=[{role:'system',content:sys}];
+  CH.slice(0,-1).forEach(function(m){apiMsgs.push({role:m.role==='bot'?'assistant':'user',content:m.content});});
+  apiMsgs.push({role:'user',content:prompt||'Give me key insights from this data.'});
+  fetch('https://router.huggingface.co/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+HK},body:JSON.stringify({model:HM,messages:apiMsgs,max_tokens:1024,temperature:0.1})})
+  .then(function(r){if(r.status===401){handle401();return Promise.reject(new Error('401'));}if(!r.ok)return r.json().then(function(e){throw new Error((e.error&&e.error.message)||'HTTP '+r.status);});return r.json();})
+  .then(function(data){removeTyping();var reply=data.choices&&data.choices[0]&&data.choices[0].message.content||'Could not analyse data.';CH.push({role:'bot',content:reply,sources:[]});addMsg('bot',reply);})
+  .catch(function(e){if(e.message!=='401'){removeTyping();addMsg('bot','Analysis error: '+e.message);}}).then(function(){btn.disabled=false;});
+}
+
+// ── TYPING INDICATOR ──────────────────────────────────────────────────────────
+function showTyping(){var c=G('msgs'),tw=document.createElement('div');tw.className='trow';tw.id='tw';tw.innerHTML='<div class="mav bot"><svg width="14" height="14" viewBox="0 0 1000 1000"><use href="#SL"/></svg></div><div class="tbbl"><div class="td"></div><div class="td"></div><div class="td"></div></div>';c.appendChild(tw);c.scrollTop=c.scrollHeight;}
+function removeTyping(){var tw=G('tw');if(tw)tw.remove();}
+
+// ── TTS ───────────────────────────────────────────────────────────────────────
+function toggleTTS(){
+  ttsEnabled=!ttsEnabled;
+  G('tts-btn').textContent=ttsEnabled?'🔊 AI Speak: ON':'🔇 AI Speak: OFF';
+  G('tts-btn').classList.toggle('listening',ttsEnabled);
+  if(!ttsEnabled&&speechSynth)speechSynth.cancel();
+  toast('AI voice '+(ttsEnabled?'ON':'OFF'));
+}
+function speakIfEnabled(text,onDone){
+  if(!ttsEnabled||!speechSynth){if(onDone)onDone();return;}
+  speechSynth.cancel();
+  var plain=text.replace(/```[\s\S]*?```/g,'').replace(/[*_`#]/g,'').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1').trim().slice(0,500);
+  if(!plain){if(onDone)onDone();return;}
+  var utt=new SpeechSynthesisUtterance(plain);utt.lang=profileData.lang||'en';
+  var voices=speechSynth.getVoices();if(voices.length){var pick=voices.find(function(v){return v.lang.startsWith(profileData.lang||'en');});if(pick)utt.voice=pick;}
+  if(onDone){utt.onend=onDone;utt.onerror=onDone;}
+  speechSynth.speak(utt);
+}
+
+// ── PTT RECORDING ─────────────────────────────────────────────────────────────
+async function startRecording(){
+  try{var stream=await navigator.mediaDevices.getUserMedia({audio:true});audioChunks=[];mediaRecorder=new MediaRecorder(stream);mediaRecorder.ondataavailable=function(e){if(e.data.size>0)audioChunks.push(e.data);};mediaRecorder.onstop=function(){transcribeAudio(new Blob(audioChunks,{type:'audio/webm'}));stream.getTracks().forEach(function(t){t.stop();});};mediaRecorder.start(100);G('voice-indicator').style.display='flex';G('voice-status').textContent='Recording...';isListening=true;}
+  catch(e){toast('Microphone access denied','err');}
+}
+function stopRecording(){if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();G('voice-indicator').style.display='none';isListening=false;}
+function transcribeAudio(blob){
+  G('voice-status').textContent='Transcribing...';G('voice-indicator').style.display='flex';
+  var fd=new FormData();fd.append('file',blob,'audio.webm');fd.append('model',HF_ASR);
+  fetch('https://router.huggingface.co/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+HK},body:fd})
+  .then(function(r){if(r.status===401){handle401();G('voice-indicator').style.display='none';return Promise.reject(new Error('401'));}return r.json();})
+  .then(function(data){G('voice-indicator').style.display='none';var text=data.text||data.transcription||'';if(text){G('chat-inp').value=text;sendMsg();}else toast('Could not transcribe — speak clearly and try again','err');})
+  .catch(function(e){if(e.message!=='401'){G('voice-indicator').style.display='none';toast('Transcription error','err');}});
+}
+
+// ── SPEAK FREELY MODE ────────────────────────────────────────────────────────
+function toggleSFMode(){isSFMode?stopSFMode():startSFMode();}
+function startSFMode(){if(!CC){toast('Open a chat first to use Speak Freely','err');return;}isSFMode=true;G('sf-bar').style.display='block';G('sf-btn').classList.add('active');toast('Speak Freely ON — talk naturally, pauses auto-send');startSFRecording();}
+function stopSFMode(){isSFMode=false;G('sf-bar').style.display='none';G('sf-btn').classList.remove('active');if(sfMediaRecorder&&sfMediaRecorder.state!=='inactive')sfMediaRecorder.stop();if(sfAudioContext){try{sfAudioContext.close();}catch(e){}}sfMediaRecorder=null;sfAudioContext=null;sfAnalyser=null;if(speechSynth)speechSynth.cancel();toast('Speak Freely OFF');}
+async function startSFRecording(){
+  if(!isSFMode)return;
+  try{
+    var stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    sfAudioContext=new(window.AudioContext||window.webkitAudioContext)();var source=sfAudioContext.createMediaStreamSource(stream);sfAnalyser=sfAudioContext.createAnalyser();sfAnalyser.fftSize=1024;source.connect(sfAnalyser);
+    sfAudioChunks=[];sfMediaRecorder=new MediaRecorder(stream);
+    sfMediaRecorder.ondataavailable=function(e){if(e.data.size>0)sfAudioChunks.push(e.data);};
+    sfMediaRecorder.onstop=function(){var blob=new Blob(sfAudioChunks,{type:'audio/webm'});stream.getTracks().forEach(function(t){t.stop();});try{sfAudioContext.close();}catch(e){}sfAudioContext=null;sfAnalyser=null;sfTranscribeAndSend(blob);};
+    sfMediaRecorder.start(200);
+    var buf=new Uint8Array(sfAnalyser.frequencyBinCount),silenceStart=null,hasSpeech=false;
+    (function detect(){if(!isSFMode||!sfAnalyser)return;sfAnalyser.getByteFrequencyData(buf);var peak=0;for(var i=0;i<buf.length;i++)if(buf[i]>peak)peak=buf[i];if(peak>18){hasSpeech=true;silenceStart=null;}else if(hasSpeech){if(!silenceStart)silenceStart=Date.now();if(Date.now()-silenceStart>1800){if(sfMediaRecorder&&sfMediaRecorder.state!=='inactive')sfMediaRecorder.stop();return;}}requestAnimationFrame(detect);})();
+  }catch(e){toast('Microphone access denied','err');stopSFMode();}
+}
+function sfTranscribeAndSend(blob){
+  if(!isSFMode||!CC){if(isSFMode)setTimeout(startSFRecording,600);return;}
+  var fd=new FormData();fd.append('file',blob,'sf.webm');fd.append('model',HF_ASR);
+  fetch('https://router.huggingface.co/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+HK},body:fd})
+  .then(function(r){if(r.status===401){handle401();stopSFMode();return Promise.reject(new Error('401'));}return r.json();})
+  .then(function(data){var text=(data.text||data.transcription||'').trim();if(text){G('chat-inp').value=text;sendMsg();}else if(isSFMode)setTimeout(startSFRecording,600);})
+  .catch(function(e){if(e.message!=='401'&&isSFMode)setTimeout(startSFRecording,1000);});
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function extractSrcs(t){var seen={},out=[],m;var re1=/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;while((m=re1.exec(t))!==null){if(!seen[m[2]]){seen[m[2]]=1;out.push({title:m[1],url:m[2]});}}if(!out.length){var re2=/https?:\/\/[^\s)>\]"]{10,}/g;while((m=re2.exec(t))!==null){var u=m[0].replace(/[.,;:'")\]]+$/,'');if(!seen[u]){seen[u]=1;out.push({title:u.split('/').slice(-1)[0]||u,url:u});}}}return out.slice(0,6);}
+function getFilesCtx(){
+  if(!CP)return Promise.resolve('');
+  return sb.from('files').select('name,url').eq('project_id',CP.id).then(function(r){
+    if(!r.data||!r.data.length)return'';
+    var readable=r.data.filter(function(f){return['cs','gd','cpp','h','py','txt','md','json','js','ts','csv'].indexOf((f.name.split('.').pop()||'').toLowerCase())>=0;});
+    if(!readable.length)return'';
+    return Promise.all(readable.map(function(f){return fetch(f.url).then(function(r){return r.text();}).then(function(t){return'--- '+f.name+' ---\n'+t.slice(0,3000);}).catch(function(){return'';}); })).then(function(parts){return parts.join('\n\n').slice(0,8000);});
+  }).catch(function(){return'';});
+}
+var _mfn=null;
+function openMod(title,body,okLbl,fn){G('mtitle').textContent=title;G('mbody').innerHTML=body;G('mok').textContent=okLbl;_mfn=fn;G('modal-ov').style.display='flex';setTimeout(function(){var i=G('mbody').querySelector('input,textarea');if(i)i.focus();},80);}
+function closeMod(){G('modal-ov').style.display='none';}
+
+// ── DOM WIRING ────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  G('land-signup-btn').addEventListener('click',function(){showAuthModal(1);});
+  G('land-signin-btn').addEventListener('click',function(){showAuthModal(0);});
+  G('auth-close').addEventListener('click',function(){G('auth-modal').style.display='none';G('landing').style.display='flex';});
+  G('tab-login').addEventListener('click',function(){authTab(0);});G('tab-signup').addEventListener('click',function(){authTab(1);});
+  G('login-btn').addEventListener('click',doLogin);G('signup-btn').addEventListener('click',doSignup);
+  G('le').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+  G('lp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+  G('sp').addEventListener('keydown',function(e){if(e.key==='Enter')doSignup();});
+  G('google-btn').addEventListener('click',oGoogle);
+  G('brand-home').addEventListener('click',goHome);G('toggle-sb-btn').addEventListener('click',toggleSB);
+  G('bc1').addEventListener('click',function(){if(CP)showProjPanel();else goHome();});
+  G('sb-new').addEventListener('click',function(){if(CP)openChatModal(CP.id);else openProjModal();});
+  G('home-new-proj').addEventListener('click',openProjModal);G('home-new-chat').addEventListener('click',function(){openChatModal(null);});
+  G('sb-user-row').addEventListener('click',toggleProfileMenu);
+  document.addEventListener('click',function(e){if(!e.target.closest('#sb-user-footer'))G('profile-menu').style.display='none';});
+  G('pm-profile').addEventListener('click',openProfileModal);G('pm-settings').addEventListener('click',openProfileModal);
+  G('pm-logout').addEventListener('click',doLogout);G('pm-delete').addEventListener('click',doDeleteAccount);
+  G('profile-close').addEventListener('click',function(){G('profile-modal').style.display='none';});
+  G('profile-cancel').addEventListener('click',function(){G('profile-modal').style.display='none';});
+  G('profile-save').addEventListener('click',saveProfile);
+  G('upload-av-btn').addEventListener('click',function(){G('av-file-inp').click();});
+  G('av-file-inp').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){profileData.avatarUrl=ev.target.result;profileData.avatarEmoji='';renderProfileAvatarPreview();};r.readAsDataURL(f);});
+  G('ptab-chats').addEventListener('click',function(){ppTab('chats');});G('ptab-inst').addEventListener('click',function(){ppTab('inst');});G('ptab-files').addEventListener('click',function(){ppTab('files');});
+  G('save-inst-btn').addEventListener('click',saveInst);G('pp-new-chat').addEventListener('click',function(){if(CP)openChatModal(CP.id);});
+  G('dz').addEventListener('click',function(){G('fi').click();});
+  G('dz').addEventListener('dragover',function(e){e.preventDefault();G('dz').classList.add('drag');});
+  G('dz').addEventListener('dragleave',function(){G('dz').classList.remove('drag');});
+  G('dz').addEventListener('drop',function(e){e.preventDefault();G('dz').classList.remove('drag');uploadFiles(e.dataTransfer.files);});
+  G('fi').addEventListener('change',function(e){uploadFiles(e.target.files);e.target.value='';});
+  G('att-btn').addEventListener('click',function(){G('cai').click();});
+  G('cai').addEventListener('change',function(e){
+    Array.from(e.target.files).forEach(function(f){var isImg=['image/png','image/jpeg','image/gif','image/webp'].indexOf(f.type)>=0;var r=new FileReader();r.onload=function(ev){ATT.push({name:f.name,content:isImg?null:ev.target.result,dataUrl:isImg?ev.target.result:null,isImage:isImg});renderChips();};if(isImg)r.readAsDataURL(f);else r.readAsText(f);});e.target.value='';
+  });
+  G('ptt-btn').addEventListener('mousedown',function(e){e.preventDefault();G('ptt-btn').classList.add('recording');startRecording();});
+  G('ptt-btn').addEventListener('mouseup',function(){G('ptt-btn').classList.remove('recording');stopRecording();});
+  G('ptt-btn').addEventListener('mouseleave',function(){if(G('ptt-btn').classList.contains('recording')){G('ptt-btn').classList.remove('recording');stopRecording();}});
+  G('ptt-btn').addEventListener('touchstart',function(e){e.preventDefault();G('ptt-btn').classList.add('recording');startRecording();},{passive:false});
+  G('ptt-btn').addEventListener('touchend',function(e){e.preventDefault();G('ptt-btn').classList.remove('recording');stopRecording();});
+  G('listen-toggle').addEventListener('click',function(){alwaysListening=!alwaysListening;G('listen-toggle').classList.toggle('listening',alwaysListening);if(alwaysListening){startRecording();toast('Always listening — speak now');}else{stopRecording();toast('Listening stopped');}});
+  G('voice-cancel').addEventListener('click',function(){stopRecording();G('voice-indicator').style.display='none';});
+  G('tts-btn').addEventListener('click',toggleTTS);
+  G('sf-btn').addEventListener('click',toggleSFMode);G('sf-stop-btn').addEventListener('click',stopSFMode);
+  G('send-btn').addEventListener('click',sendMsg);
+  G('chat-inp').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+  G('chat-inp').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';if(CC)localStorage.setItem('surge_draft_'+CC.id,this.value);});
+  G('preview-close').addEventListener('click',closePreview);
+  G('msgs').addEventListener('click',function(e){
+    var cpbtn=e.target.closest('.cpbtn');if(cpbtn){navigator.clipboard.writeText(decodeURIComponent(cpbtn.dataset.raw)).catch(function(){});cpbtn.textContent='Copied!';cpbtn.style.color='var(--acc)';setTimeout(function(){cpbtn.textContent='Copy';cpbtn.style.color='';},1800);return;}
+    var pvbtn=e.target.closest('.pvbtn');if(pvbtn){var code=decodeURIComponent(pvbtn.dataset.code);openPreview('HTML Preview','<iframe srcdoc="'+E(code)+'" style="width:100%;height:100%;border:none;min-height:400px" sandbox="allow-scripts allow-same-origin"></iframe>',function(){var a=document.createElement('a');a.href='data:text/html;charset=utf-8,'+encodeURIComponent(code);a.download='surge-preview.html';a.click();});return;}
+    var mcqOpt=e.target.closest('.mcq-opt');if(mcqOpt&&CC){var ans=mcqOpt.dataset.ans;if(ans){G('chat-inp').value=ans;sendMsg();}return;}
+  });
+  G('mok').addEventListener('click',function(){if(_mfn)_mfn();});
+  G('modal-cancel').addEventListener('click',closeMod);
+  G('modal-ov').addEventListener('click',function(e){if(e.target===G('modal-ov'))closeMod();});
+  window.addEventListener('beforeunload',function(){if(CC){var v=G('chat-inp').value;if(v)localStorage.setItem('surge_draft_'+CC.id,v);}});
+  document.addEventListener('visibilitychange',function(){if(!CC)return;if(document.hidden){localStorage.setItem('surge_scroll_'+CC.id,G('msgs').scrollTop);}else{var s=parseInt(localStorage.getItem('surge_scroll_'+CC.id)||'-1');if(s>=0)G('msgs').scrollTop=s;}});
+});
+</script>
+</body>
+</html>
